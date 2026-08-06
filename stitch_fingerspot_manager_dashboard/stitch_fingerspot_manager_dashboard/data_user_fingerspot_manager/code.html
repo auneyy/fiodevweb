@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FingerSpot Manager - Data User</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #080810;
+            color: #e4e1e9;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px border rgba(255, 255, 255, 0.1);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .custom-transition {
+            transition: all 0.3s ease;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline-variant": "#414752",
+                      "on-tertiary": "#512400",
+                      "on-tertiary-fixed-variant": "#733600",
+                      "on-tertiary-container": "#fffeff",
+                      "on-secondary-fixed": "#00105b",
+                      "on-error": "#690005",
+                      "inverse-on-surface": "#303036",
+                      "on-surface-variant": "#c1c6d4",
+                      "on-primary": "#00315f",
+                      "primary-fixed": "#d4e3ff",
+                      "primary": "#a5c8ff",
+                      "on-secondary-container": "#a3b0ff",
+                      "secondary-fixed": "#dee0ff",
+                      "outline": "#8b919e",
+                      "surface-variant": "#35343a",
+                      "on-secondary": "#15267b",
+                      "inverse-surface": "#e4e1e9",
+                      "on-surface": "#e4e1e9",
+                      "tertiary-container": "#ba5b00",
+                      "surface-tint": "#a5c8ff",
+                      "on-background": "#e4e1e9",
+                      "background": "#131318",
+                      "surface-container-highest": "#35343a",
+                      "tertiary": "#ffb688",
+                      "secondary": "#bac3ff",
+                      "on-error-container": "#ffdad6",
+                      "on-primary-container": "#fffdff",
+                      "tertiary-fixed": "#ffdbc7",
+                      "on-primary-fixed-variant": "#004786",
+                      "primary-fixed-dim": "#a5c8ff",
+                      "secondary-fixed-dim": "#bac3ff",
+                      "on-tertiary-fixed": "#311300",
+                      "surface-container-lowest": "#0e0e13",
+                      "error": "#ffb4ab",
+                      "on-secondary-fixed-variant": "#2f3f92",
+                      "on-primary-fixed": "#001c3a",
+                      "inverse-primary": "#005faf",
+                      "tertiary-fixed-dim": "#ffb688",
+                      "surface-container-high": "#2a292f",
+                      "secondary-container": "#2f3f92",
+                      "surface-container-low": "#1b1b20",
+                      "surface": "#131318",
+                      "surface-bright": "#39383e",
+                      "primary-container": "#1976d2",
+                      "surface-dim": "#131318",
+                      "surface-container": "#1f1f25",
+                      "error-container": "#93000a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-margin": "20px",
+                      "md": "16px",
+                      "gutter": "16px",
+                      "xl": "32px",
+                      "sm": "8px",
+                      "lg": "24px",
+                      "base": "4px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "headline-sm": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "34px", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-screen w-[240px] bg-white/5 backdrop-blur-[20px] border-r border-white/10 shadow-2xl flex flex-col gap-sm p-md z-50">
+<div class="px-lg py-md mb-md">
+<span class="font-headline-md text-headline-md font-bold text-primary">FingerSpot</span>
+<p class="text-on-surface-variant text-label-sm opacity-60">API Manager</p>
+</div>
+<nav class="flex-1 flex flex-col gap-xs">
+<a class="flex items-center gap-md px-lg py-md text-on-surface-variant hover:text-on-surface transition-all duration-300 hover:bg-white/5 hover:border-white/20 active:scale-95" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-headline-sm text-headline-sm tracking-tight text-[15px]">Dashboard</span>
+</a>
+<!-- Active State: Data User -->
+<a class="flex items-center gap-md px-lg py-md text-primary bg-white/10 rounded-xl border border-white/20 transition-all duration-300 active:scale-95" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-headline-sm text-headline-sm tracking-tight text-[15px]">Data User</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-on-surface-variant hover:text-on-surface transition-all duration-300 hover:bg-white/5 hover:border-white/20 active:scale-95" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-headline-sm text-headline-sm tracking-tight text-[15px]">Absensi</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-on-surface-variant hover:text-on-surface transition-all duration-300 hover:bg-white/5 hover:border-white/20 active:scale-95" href="#">
+<span class="material-symbols-outlined">vpn_key</span>
+<span class="font-headline-sm text-headline-sm tracking-tight text-[15px]">Data PIN</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-on-surface-variant hover:text-on-surface transition-all duration-300 hover:bg-white/5 hover:border-white/20 active:scale-95" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-headline-sm text-headline-sm tracking-tight text-[15px]">Riwayat API</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-on-surface-variant hover:text-on-surface transition-all duration-300 hover:bg-white/5 hover:border-white/20 active:scale-95" href="#">
+<span class="material-symbols-outlined">webhook</span>
+<span class="font-headline-sm text-headline-sm tracking-tight text-[15px]">Riwayat Webhook</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-on-surface-variant hover:text-on-surface transition-all duration-300 hover:bg-white/5 hover:border-white/20 active:scale-95" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-headline-sm text-headline-sm tracking-tight text-[15px]">Riwayat Command</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-on-surface-variant hover:text-on-surface transition-all duration-300 hover:bg-white/5 hover:border-white/20 active:scale-95 mt-auto" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-headline-sm text-headline-sm tracking-tight text-[15px]">Pengaturan</span>
+</a>
+</nav>
+</aside>
+<!-- Content Canvas -->
+<main class="ml-[240px] flex-1 min-h-screen relative">
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 h-[64px] w-[calc(100%-240px)] bg-white/5 backdrop-blur-[40px] border-b border-white/5 shadow-sm flex justify-between items-center px-xl z-40">
+<div class="flex items-center gap-md">
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">Data User</h1>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface cursor-pointer transition-opacity active:opacity-60">sensors</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface cursor-pointer transition-opacity active:opacity-60">notifications</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-white/10">
+<img class="w-full h-full object-cover" data-alt="A professional user profile portrait against a dark cinematic background, with subtle blue rim lighting and technical overlays. The photography style is modern, sharp, and corporate." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9VQ6h3DG-mCOtc2uUcdeyA2GuumOb5qUel8d1AF4uhok5T5GcwjITb-6xuR8ifMGuW94boAs7z0crYPeI8jzHhvOagwzJUs25UPFTNdlMfNo5-GcTYxodYflCqD_udVaxEFJWU3HBU5djFxWqRSiX9QHgCMUXTaFPPkWxn4w6KSp7KRNrlO4vqf2DnDK-3GQ3Rz5S-wBdq3n_hrng85qg1hhTpsQ_6YBzbE-NiyBtWYYbsDD1dkR1iQ"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="mt-[64px] p-xl flex flex-col gap-lg max-w-[1400px] mx-auto">
+<!-- Tutorial Panel -->
+<section class="glass-panel rounded-xl overflow-hidden custom-transition">
+<button class="w-full px-lg py-md flex items-center justify-between hover:bg-white/5 transition-colors" onclick="toggleTutorial()">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">help_center</span>
+<span class="font-headline-sm text-headline-sm text-[16px]">Panduan Halaman Ini</span>
+</div>
+<span class="material-symbols-outlined transform transition-transform" id="tutorial-chevron">expand_more</span>
+</button>
+<div class="hidden border-t border-white/5 px-lg py-lg bg-white/[0.02]" id="tutorial-content">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+<div class="space-y-md">
+<h3 class="text-primary font-bold text-label-md">PROSES MANAJEMEN USER</h3>
+<ul class="space-y-sm text-body-md text-on-surface-variant">
+<li class="flex gap-md"><span class="text-primary font-bold">1.</span> Sinkronisasi: Ambil data user terbaru dari mesin absensi.</li>
+<li class="flex gap-md"><span class="text-primary font-bold">2.</span> Tambah User: Daftarkan identitas user baru di sistem manager.</li>
+<li class="flex gap-md"><span class="text-primary font-bold">3.</span> Sidik Jari: Input template sidik jari manual atau dari mesin.</li>
+<li class="flex gap-md"><span class="text-primary font-bold">4.</span> Foto Wajah: Upload foto untuk verifikasi pengenalan wajah.</li>
+<li class="flex gap-md"><span class="text-primary font-bold">5.</span> Register Online: Perintah mesin untuk memulai scan jarak jauh.</li>
+</ul>
+</div>
+<div class="space-y-md">
+<h3 class="text-primary font-bold text-label-md">API ENDPOINT EXAMPLE</h3>
+<div class="bg-black/40 rounded-lg p-md font-mono text-[12px] border border-white/10 text-on-surface-variant overflow-x-auto">
+<span class="text-blue-400">POST</span> /api/v1/user/sync<br/>
+<span class="text-white">{</span><br/>
+                                  <span class="text-secondary">"pin"</span>: <span class="text-tertiary">"1001"</span>,<br/>
+                                  <span class="text-secondary">"name"</span>: <span class="text-tertiary">"Aditya Saputra"</span>,<br/>
+                                  <span class="text-secondary">"privilege"</span>: <span class="text-tertiary">0</span>,<br/>
+                                  <span class="text-secondary">"action"</span>: <span class="text-tertiary">"push_to_device"</span><br/>
+<span class="text-white">}</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Action Bar -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div class="relative w-full md:w-[400px]">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant opacity-50">search</span>
+<input class="w-full pl-[48px] pr-md py-md glass-panel rounded-xl border border-white/10 focus:border-primary focus:ring-0 transition-all text-body-md" placeholder="Cari PIN atau nama..." type="text"/>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-sm px-lg py-md rounded-xl border border-primary text-primary font-bold text-label-md hover:bg-primary/10 custom-transition active:scale-95">
+<span class="material-symbols-outlined text-[20px]">sync</span>
+                        Sinkronisasi Data User
+                    </button>
+<button class="flex items-center gap-sm px-lg py-md rounded-xl bg-primary-container text-white font-bold text-label-md hover:shadow-[0_0_15px_rgba(25,118,210,0.4)] custom-transition active:scale-95" onclick="openModal('add-user-modal')">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                        Tambah User
+                    </button>
+</div>
+</div>
+<!-- Users Table -->
+<div class="glass-panel rounded-xl overflow-hidden border border-white/5">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-white/10 bg-white/[0.02]">
+<th class="px-lg py-md text-label-md text-on-surface-variant font-bold uppercase tracking-wider">PIN</th>
+<th class="px-lg py-md text-label-md text-on-surface-variant font-bold uppercase tracking-wider">Nama</th>
+<th class="px-lg py-md text-label-md text-on-surface-variant font-bold uppercase tracking-wider">Privilege</th>
+<th class="px-lg py-md text-label-md text-on-surface-variant font-bold uppercase tracking-wider">Finger</th>
+<th class="px-lg py-md text-label-md text-on-surface-variant font-bold uppercase tracking-wider">Face</th>
+<th class="px-lg py-md text-label-md text-on-surface-variant font-bold uppercase tracking-wider">Template</th>
+<th class="px-lg py-md text-label-md text-on-surface-variant font-bold uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/[0.05]">
+<!-- Row 1 -->
+<tr class="hover:bg-white/[0.03] custom-transition cursor-pointer group" onclick="openDrawer('Aditya Saputra')">
+<td class="px-lg py-lg text-body-md font-mono text-primary">1001</td>
+<td class="px-lg py-lg text-body-md font-semibold">Aditya Saputra</td>
+<td class="px-lg py-lg">
+<span class="px-sm py-1 rounded bg-secondary-container/20 border border-secondary-container/40 text-secondary text-[11px] font-bold uppercase">Admin</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined text-green-400">check_circle</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined text-green-400">check_circle</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined text-green-400">check_circle</span>
+</td>
+<td class="px-lg py-lg text-right">
+<button class="material-symbols-outlined text-on-surface-variant group-hover:text-on-surface">more_vert</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-white/[0.03] custom-transition cursor-pointer group" onclick="openDrawer('Rina Lestari')">
+<td class="px-lg py-lg text-body-md font-mono text-primary">1002</td>
+<td class="px-lg py-lg text-body-md font-semibold">Rina Lestari</td>
+<td class="px-lg py-lg">
+<span class="px-sm py-1 rounded bg-white/10 border border-white/20 text-on-surface-variant text-[11px] font-bold uppercase">User Biasa</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined text-green-400">check_circle</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined opacity-20">horizontal_rule</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined text-green-400">check_circle</span>
+</td>
+<td class="px-lg py-lg text-right">
+<button class="material-symbols-outlined text-on-surface-variant group-hover:text-on-surface">more_vert</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-white/[0.03] custom-transition cursor-pointer group" onclick="openDrawer('Budi Santoso')">
+<td class="px-lg py-lg text-body-md font-mono text-primary">1003</td>
+<td class="px-lg py-lg text-body-md font-semibold">Budi Santoso</td>
+<td class="px-lg py-lg">
+<span class="px-sm py-1 rounded bg-tertiary-container/10 border border-tertiary-container/30 text-tertiary text-[11px] font-bold uppercase">Supervisor</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined text-green-400">check_circle</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined text-green-400">check_circle</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined opacity-20">horizontal_rule</span>
+</td>
+<td class="px-lg py-lg text-right">
+<button class="material-symbols-outlined text-on-surface-variant group-hover:text-on-surface">more_vert</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-white/[0.03] custom-transition cursor-pointer group" onclick="openDrawer('Siti Aminah')">
+<td class="px-lg py-lg text-body-md font-mono text-primary">1004</td>
+<td class="px-lg py-lg text-body-md font-semibold">Siti Aminah</td>
+<td class="px-lg py-lg">
+<span class="px-sm py-1 rounded bg-white/10 border border-white/20 text-on-surface-variant text-[11px] font-bold uppercase">User Biasa</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined opacity-20">horizontal_rule</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined opacity-20">horizontal_rule</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined opacity-20">horizontal_rule</span>
+</td>
+<td class="px-lg py-lg text-right">
+<button class="material-symbols-outlined text-on-surface-variant group-hover:text-on-surface">more_vert</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-white/[0.03] custom-transition cursor-pointer group" onclick="openDrawer('Doni Setiawan')">
+<td class="px-lg py-lg text-body-md font-mono text-primary">1005</td>
+<td class="px-lg py-lg text-body-md font-semibold">Doni Setiawan</td>
+<td class="px-lg py-lg">
+<span class="px-sm py-1 rounded bg-secondary-container/20 border border-secondary-container/40 text-secondary text-[11px] font-bold uppercase">Admin</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined text-green-400">check_circle</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined opacity-20">horizontal_rule</span>
+</td>
+<td class="px-lg py-lg">
+<span class="material-symbols-outlined text-green-400">check_circle</span>
+</td>
+<td class="px-lg py-lg text-right">
+<button class="material-symbols-outlined text-on-surface-variant group-hover:text-on-surface">more_vert</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-lg py-md border-t border-white/10 flex items-center justify-between text-label-md text-on-surface-variant">
+<span>Showing 5 of 24 Users</span>
+<div class="flex items-center gap-md">
+<button class="hover:text-on-surface transition-colors">Prev</button>
+<div class="flex gap-sm">
+<span class="px-2 py-1 bg-primary text-on-primary rounded font-bold">1</span>
+<span class="px-2 py-1 hover:bg-white/5 rounded transition-colors cursor-pointer">2</span>
+<span class="px-2 py-1 hover:bg-white/5 rounded transition-colors cursor-pointer">3</span>
+</div>
+<button class="hover:text-on-surface transition-colors">Next</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Add User Modal Overlay -->
+<div class="hidden fixed inset-0 z-[60] flex items-center justify-center p-md" id="add-user-modal">
+<div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('add-user-modal')"></div>
+<div class="relative w-full max-w-2xl bg-surface-container-high rounded-xl shadow-2xl border border-white/10 overflow-hidden animate-in fade-in zoom-in duration-300">
+<div class="px-lg py-md border-b border-white/5 flex justify-between items-center">
+<h2 class="font-headline-sm text-headline-sm">Tambah User Baru</h2>
+<button class="material-symbols-outlined hover:text-error transition-colors" onclick="closeModal('add-user-modal')">close</button>
+</div>
+<div class="p-lg grid grid-cols-2 gap-lg max-h-[716px] overflow-y-auto">
+<div class="space-y-md">
+<div>
+<label class="block text-label-md text-on-surface-variant mb-xs">PIN</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-lg px-md py-sm focus:border-primary focus:ring-0 text-body-md" placeholder="Contoh: 1001" type="text"/>
+</div>
+<div>
+<label class="block text-label-md text-on-surface-variant mb-xs">Nama Lengkap</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-lg px-md py-sm focus:border-primary focus:ring-0 text-body-md" placeholder="Nama User" type="text"/>
+</div>
+<div>
+<label class="block text-label-md text-on-surface-variant mb-xs">Password Mesin</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-lg px-md py-sm focus:border-primary focus:ring-0 text-body-md" placeholder="Optional" type="password"/>
+</div>
+<div>
+<label class="block text-label-md text-on-surface-variant mb-xs">Privilege</label>
+<select class="w-full bg-white/5 border border-white/10 rounded-lg px-md py-sm focus:border-primary focus:ring-0 text-body-md text-on-surface">
+<option value="0">User Biasa</option>
+<option value="1">Admin</option>
+<option value="2">Supervisor</option>
+</select>
+</div>
+<div>
+<label class="block text-label-md text-on-surface-variant mb-xs">RFID Card</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-lg px-md py-sm focus:border-primary focus:ring-0 text-body-md" placeholder="10-digit HEX code" type="text"/>
+</div>
+</div>
+<div class="space-y-md">
+<div>
+<label class="block text-label-md text-on-surface-variant mb-xs">Foto Wajah</label>
+<div class="w-full aspect-video border-2 border-dashed border-white/10 rounded-lg flex flex-col items-center justify-center gap-sm cursor-pointer hover:border-primary/50 transition-colors bg-white/[0.02]">
+<span class="material-symbols-outlined text-primary text-[32px]">cloud_upload</span>
+<span class="text-label-md text-on-surface-variant">Klik atau drop foto</span>
+</div>
+</div>
+<div>
+<label class="block text-label-md text-on-surface-variant mb-xs">Template (Raw Data)</label>
+<textarea class="w-full bg-white/5 border border-white/10 rounded-lg px-md py-sm focus:border-primary focus:ring-0 text-body-md font-mono resize-none" placeholder="Masukkan binary template jika ada..." rows="4"></textarea>
+</div>
+</div>
+</div>
+<div class="px-lg py-md bg-white/[0.02] border-t border-white/5 flex justify-end gap-md">
+<button class="px-lg py-sm rounded-lg border border-white/10 text-on-surface hover:bg-white/5 font-bold transition-all" onclick="closeModal('add-user-modal')">Batal</button>
+<button class="px-lg py-sm rounded-lg bg-primary-container text-white font-bold transition-all shadow-lg hover:shadow-primary/20">Tambah ke Mesin</button>
+</div>
+</div>
+</div>
+<!-- User Detail Drawer -->
+<div class="fixed top-0 right-0 h-full w-[400px] bg-surface-container shadow-2xl z-[70] transform translate-x-full transition-transform duration-500 ease-out border-l border-white/10" id="user-drawer">
+<div class="p-lg h-full flex flex-col">
+<div class="flex items-center justify-between mb-xl">
+<h2 class="font-headline-sm text-headline-sm">Detail User</h2>
+<button class="material-symbols-outlined hover:text-on-surface-variant" onclick="closeDrawer()">arrow_forward</button>
+</div>
+<div class="flex-1 overflow-y-auto space-y-xl pr-sm">
+<div class="flex flex-col items-center gap-md">
+<div class="h-24 w-24 rounded-full border-4 border-primary/20 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A futuristic biometric ID photo of a person, integrated with digital scanning lines and a semi-transparent interface overlay. The background is a sleek, dark tech-office environment with cool blue lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMCaZmvdCx1VOQh0V74F6OA9D6jWb2fosgYcJeYdsqduVwCMtQLcTyBqWLiC2pH2yYqD8dd7iy-_Mj2JuV1bnOxVu81M3x6my6mhdEfo3c5MJzlTSEaIbSockVuwwHdWjyuqparfxwHEf6y-2_CUSTN5MVeYSBTa6jwDS0xq-jsHPdPYvDa8aBfL1w6xgFMNLycBElF3KTvIMB41vcfU5FOfKIOh9XEUE0Of4QugoWougRga_6hXNhow"/>
+</div>
+<div class="text-center">
+<h3 class="font-headline-md text-headline-md" id="drawer-name">Aditya Saputra</h3>
+<p class="text-primary font-mono">PIN: 1001</p>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-md">
+<div class="glass-panel p-md rounded-xl space-y-sm">
+<span class="text-label-md text-on-surface-variant font-bold block">TEMPLATE BIOMETRIK</span>
+<div class="bg-black/20 rounded p-sm border border-white/5 flex items-center justify-between">
+<span class="font-mono text-[10px] text-on-surface-variant truncate mr-md">v1:T2:8a9f2e3c7b1...</span>
+<button class="flex items-center gap-xs px-2 py-1 rounded bg-primary/20 text-primary text-[10px] font-bold hover:bg-primary/30 transition-colors">
+<span class="material-symbols-outlined text-[14px]">content_copy</span> Copy
+                                </button>
+</div>
+</div>
+<div class="bg-primary/5 border border-primary/20 p-md rounded-xl flex gap-md items-start">
+<span class="material-symbols-outlined text-primary">info</span>
+<p class="text-body-md text-on-surface-variant leading-relaxed">
+                                Template ini disinkronkan dari Mesin Headquarter pada <span class="text-on-surface">24 Okt 2023</span>.
+                            </p>
+</div>
+</div>
+<div class="space-y-md">
+<button class="w-full flex items-center justify-center gap-md py-md rounded-xl border border-white/10 hover:bg-white/5 transition-all text-label-md font-bold" onclick="openModal('register-online-modal')">
+<span class="material-symbols-outlined">radio</span> Register Online
+                        </button>
+<button class="w-full flex items-center justify-center gap-md py-md rounded-xl border border-error/50 text-error hover:bg-error/10 transition-all text-label-md font-bold" onclick="confirmDelete()">
+<span class="material-symbols-outlined">delete</span> Hapus User
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Register Online Modal -->
+<div class="hidden fixed inset-0 z-[80] flex items-center justify-center p-md" id="register-online-modal">
+<div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal('register-online-modal')"></div>
+<div class="relative w-full max-w-md bg-surface-container-high rounded-2xl shadow-2xl border border-white/10 p-xl text-center space-y-lg animate-in zoom-in duration-300">
+<div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-md animate-pulse">
+<span class="material-symbols-outlined text-primary text-[40px]">radio</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md">Register Online</h3>
+<p class="text-on-surface-variant text-body-md">Pilih jenis registrasi untuk PIN <span class="text-primary font-bold">1001</span></p>
+</div>
+<div class="grid grid-cols-3 gap-md">
+<button class="flex flex-col items-center gap-sm p-md rounded-xl border border-white/10 hover:bg-primary/20 hover:border-primary transition-all">
+<span class="material-symbols-outlined text-on-surface-variant">fingerprint</span>
+<span class="text-[10px] font-bold uppercase">Sidik Jari</span>
+</button>
+<button class="flex flex-col items-center gap-sm p-md rounded-xl border border-white/10 hover:bg-primary/20 hover:border-primary transition-all">
+<span class="material-symbols-outlined text-on-surface-variant">person_search</span>
+<span class="text-[10px] font-bold uppercase">Wajah</span>
+</button>
+<button class="flex flex-col items-center gap-sm p-md rounded-xl border border-white/10 hover:bg-primary/20 hover:border-primary transition-all">
+<span class="material-symbols-outlined text-on-surface-variant">line_weight</span>
+<span class="text-[10px] font-bold uppercase">Vein</span>
+</button>
+</div>
+<p class="text-[11px] text-on-surface-variant opacity-60">Mesin akan masuk ke mode registrasi secara otomatis.</p>
+<button class="w-full py-md rounded-xl bg-white/5 font-bold hover:bg-white/10 transition-colors" onclick="closeModal('register-online-modal')">Batal</button>
+</div>
+</div>
+<!-- Delete Confirmation Modal -->
+<div class="hidden fixed inset-0 z-[90] flex items-center justify-center p-md" id="delete-modal">
+<div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal('delete-modal')"></div>
+<div class="relative w-full max-w-sm bg-surface-container-highest rounded-xl border border-error/20 p-lg text-center space-y-md">
+<span class="material-symbols-outlined text-error text-[48px]">warning</span>
+<h3 class="font-headline-sm text-headline-sm">Hapus User?</h3>
+<p class="text-on-surface-variant text-body-md">Data user dan template biometrik akan dihapus dari server dan mesin absensi secara permanen.</p>
+<div class="flex gap-md mt-lg">
+<button class="flex-1 py-md rounded-lg bg-white/5 font-bold" onclick="closeModal('delete-modal')">Batal</button>
+<button class="flex-1 py-md rounded-lg bg-error-container text-on-error-container font-bold shadow-lg shadow-error/20">Hapus</button>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function toggleTutorial() {
+            const content = document.getElementById('tutorial-content');
+            const chevron = document.getElementById('tutorial-chevron');
+            content.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function openDrawer(name) {
+            const drawer = document.getElementById('user-drawer');
+            document.getElementById('drawer-name').innerText = name;
+            drawer.classList.remove('translate-x-full');
+        }
+
+        function closeDrawer() {
+            const drawer = document.getElementById('user-drawer');
+            drawer.classList.add('translate-x-full');
+        }
+
+        function confirmDelete() {
+            openModal('delete-modal');
+        }
+
+        // Close on ESC
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal('add-user-modal');
+                closeModal('register-online-modal');
+                closeModal('delete-modal');
+                closeDrawer();
+            }
+        });
+    </script>
+</body></html>

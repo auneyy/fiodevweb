@@ -1,0 +1,223 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import GlassCard from "../components/GlassCard";
+import { formatDate } from "@/lib/utils";
+import { Key, Search, Loader2, Fingerprint, RefreshCw } from "lucide-react";
+
+interface DevicePin {
+  id: number;
+  pin: string;
+  fetched_at: string;
+}
+
+export default function PinPage() {
+  const [pins, setPins] = useState<DevicePin[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [fetching, setFetching] = useState(false);
+  const [search, setSearch] = useState("");
+  const [cloudId, setCloudId] = useState("");
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const [lastFetchTime, setLastFetchTime] = useState<string>("");
+
+  useEffect(() => {
+    loadPins();
+  }, []);
+
+  const loadPins = async () => {
+    setLoading(true);
+    const supabase = createClient();
+    const { data: settings } = await supabase
+      .from("settings")
+      .select("key, value")
+      .in("key", ["cloud_id"]);
+    const cid = settings?.find((s) => s.key === "cloud_id")?.value || "";
+    setCloudId(cid);
+
+    const { data, error } = await supabase
+      .from("device_pins")
+      .select("id, pin, fetched_at")
+      .eq("cloud_id", cid)
+      .order("pin");
+
+    if (error) {
+      console.error("[pin-page] Load error:", error);
+    }
+    console.log("[pin-page] Loaded pins:", data?.length || 0);
+    setPins(data || []);
+    setLoading(false);
+  };
+
+  const showToast = (message: string, type: "success" | "error") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 5000);
+  };
+
+  const handleFetchPins = async () => {
+    setFetching(true);
+    try {
+      console.log("[pin-page] Sending get-all-pin request...");
+      const res = await fetch("/mesin/get-all-pin", { method: "POST" });
+      const result = await res.json();
+      console.log("[pin-page] API response:", result);
+
+      if (result.success) {
+        showToast("Perintah terkirim ke mesin. Menunggu data PIN dari webhook...", "success");
+
+        // Poll for new pins every 3 seconds for 30 seconds
+        let attempts = 0;
+        const maxAttempts = 10;
+        const pollInterval = setInterval(async () => {
+          attempts++;
+          console.log(`[pin-page] Polling attempt ${attempts}/${maxAttempts}...`);
+          await loadPins();
+
+          if (attempts >= maxAttempts) {
+            clearInterval(pollInterval);
+            setFetching(false);
+            const { data: finalPins } = await createClient()
+              .from("device_pins")
+              .select("id", { count: "exact", head: true })
+              .eq("cloud_id", cloudId);
+            const count = finalPins?.length ?? 0;
+            if (count === 0) {
+              showToast("Webhook tidak diterima. Pastikan URL webhook sudah dikonfigurasi di panel Fingerspot.", "error");
+            } else {
+              showToast(`Berhasil! ${count} PIN ditemukan.`, "success");
+            }
+          }
+        }, 3000);
+      } else {
+        showToast(result.message || "Gagal mengambil PIN dari mesin", "error");
+        setFetching(false);
+      }
+    } catch (err) {
+      console.error("[pin-page] Error:", err);
+      showToast("Terjadi kesalahan: " + (err as Error).message, "error");
+      setFetching(false);
+    }
+  };
+
+  const filtered = pins.filter((p) => p.pin.includes(search));
+
+  return (
+    <div className="space-y-4">
+      {toast && (
+        <div className={`fixed top-20 right-6 z-50 px-4 py-3 rounded-xl text-sm font-medium backdrop-blur-xl border max-w-sm ${
+          toast.type === "success"
+            ? "bg-green-500/15 text-green-400 border-green-500/30"
+            : "bg-red-500/15 text-red-400 border-red-500/30"
+        }`}>
+          {toast.message}
+        </div>
+      )}
+
+      <GlassCard className="p-5 border-l-4 border-l-yellow-500/50">
+        <div className="flex items-start gap-3">
+          <Fingerprint className="w-5 h-5 text-yellow-400 mt-0.5 shrink-0" />
+          <div>
+            <p className="text-sm text-yellow-200 font-medium">Halaman ini hanya menampilkan PIN saja</p>
+            <p className="text-xs text-yellow-200/60 mt-1">
+              Data user lengkap (nama, privilege, dll) ada di halaman <a href="/user" className="underline">Data User</a>.
+              Gunakan tombol &quot;Sinkronisasi&quot; di halaman User untuk mengambil data lengkap.
+            </p>
+          </div>
+        </div>
+      </GlassCard>
+
+      <GlassCard className="p-5">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="flex items-center gap-3">
+            <Key className="w-6 h-6 text-[#1976D2]" />
+            <h2 className="text-xl font-bold text-white">Data PIN</h2>
+            <span className="text-sm text-gray-400">({pins.length} PIN)</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Cari PIN..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50"
+              />
+            </div>
+            <button
+              onClick={handleFetchPins}
+              disabled={fetching}
+              className="flex items-center gap-2 px-4 py-2 bg-[#1976D2] hover:bg-[#1565C0] disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
+            >
+              {fetching ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+              {fetching ? "Mengirim..." : "Ambil Semua PIN"}
+            </button>
+          </div>
+        </div>
+      </GlassCard>
+
+      {pins.length === 0 && !loading && (
+        <GlassCard className="p-6 border-l-4 border-l-red-500/50">
+          <div className="flex items-start gap-3">
+            <div className="text-red-400 mt-0.5">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm text-red-200 font-medium">Tidak ada data PIN di database</p>
+              <p className="text-xs text-red-200/60 mt-1">
+                Klik &quot;Ambil Semua PIN&quot; untuk mengirim perintah ke mesin. Data PIN akan muncul setelah mesin merespons via webhook.
+              </p>
+              <p className="text-xs text-red-200/60 mt-2">
+                <strong>Pastikan webhook URL sudah dikonfigurasi</strong> di panel Fingerspot ke:
+                <code className="ml-1 px-1.5 py-0.5 bg-white/10 rounded text-[10px]">
+                  {typeof window !== "undefined" ? window.location.origin : "..."}/api/webhook
+                </code>
+              </p>
+            </div>
+          </div>
+        </GlassCard>
+      )}
+
+      <GlassCard className="overflow-hidden">
+        {loading ? (
+          <div className="p-6 space-y-3">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="h-12 bg-white/5 rounded animate-pulse" />
+            ))}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-white/5 border-b border-white/10">
+                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">No</th>
+                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">PIN</th>
+                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Tanggal Fetch</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} className="px-4 py-8 text-center text-gray-500">
+                      {pins.length === 0 ? "Belum ada data PIN" : "PIN tidak ditemukan"}
+                    </td>
+                  </tr>
+                ) : (
+                  filtered.map((p, idx) => (
+                    <tr key={p.id} className="hover:bg-white/5 border-b border-white/5 transition-colors">
+                      <td className="px-4 py-3 text-sm text-gray-200">{idx + 1}</td>
+                      <td className="px-4 py-3 text-sm font-bold text-white font-mono">{p.pin}</td>
+                      <td className="px-4 py-3 text-sm text-gray-200">{formatDate(p.fetched_at)}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </GlassCard>
+    </div>
+  );
+}

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FingerSpot Manager - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            background-color: #080810;
+            color: #e4e1e9;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(165, 200, 255, 0.3);
+            box-shadow: inset 0 0 20px rgba(165, 200, 255, 0.05);
+        }
+
+        .primary-glow:hover {
+            box-shadow: 0 0 20px rgba(25, 118, 210, 0.4);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ffb4ab",
+                        "secondary-container": "#2f3f92",
+                        "surface-container-lowest": "#0e0e13",
+                        "surface-container-low": "#1b1b20",
+                        "surface-bright": "#39383e",
+                        "on-tertiary-fixed": "#311300",
+                        "secondary": "#bac3ff",
+                        "on-tertiary-fixed-variant": "#733600",
+                        "on-surface-variant": "#c1c6d4",
+                        "on-tertiary-container": "#fffeff",
+                        "on-primary": "#00315f",
+                        "on-primary-fixed": "#001c3a",
+                        "surface-dim": "#131318",
+                        "secondary-fixed-dim": "#bac3ff",
+                        "primary-fixed-dim": "#a5c8ff",
+                        "tertiary-fixed-dim": "#ffb688",
+                        "surface-container-highest": "#35343a",
+                        "inverse-surface": "#e4e1e9",
+                        "on-secondary-fixed": "#00105b",
+                        "inverse-on-surface": "#303036",
+                        "tertiary-container": "#ba5b00",
+                        "on-secondary-fixed-variant": "#2f3f92",
+                        "on-tertiary": "#512400",
+                        "surface-container-high": "#2a292f",
+                        "error-container": "#93000a",
+                        "on-primary-container": "#fffdff",
+                        "surface-container": "#1f1f25",
+                        "tertiary-fixed": "#ffdbc7",
+                        "primary-fixed": "#d4e3ff",
+                        "secondary-fixed": "#dee0ff",
+                        "surface-tint": "#a5c8ff",
+                        "surface": "#131318",
+                        "primary-container": "#1976d2",
+                        "outline-variant": "#414752",
+                        "on-secondary": "#15267b",
+                        "on-error": "#690005",
+                        "on-background": "#e4e1e9",
+                        "outline": "#8b919e",
+                        "on-surface": "#e4e1e9",
+                        "on-secondary-container": "#a3b0ff",
+                        "background": "#131318",
+                        "inverse-primary": "#005faf",
+                        "tertiary": "#ffb688",
+                        "on-error-container": "#ffdad6",
+                        "surface-variant": "#35343a",
+                        "primary": "#a5c8ff",
+                        "on-primary-fixed-variant": "#004786"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "gutter": "16px",
+                        "container-margin": "20px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "xs": "4px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "500" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface antialiased">
+<!-- SideNavBar -->
+<aside class="w-[240px] h-screen fixed left-0 top-0 border-r border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.05)] backdrop-blur-20 shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex flex-col py-lg px-md z-[60]">
+<div class="mb-xl px-sm flex items-center gap-sm">
+<div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">fingerprint</span>
+</div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">FingerSpot</h1>
+<p class="text-[10px] text-on-surface-variant tracking-widest uppercase opacity-70">Manager Console</p>
+</div>
+</div>
+<nav class="flex-1 space-y-base overflow-y-auto">
+<!-- Active: Dashboard -->
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-primary font-bold border-r-2 border-primary bg-[rgba(255,255,255,0.08)] transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant font-label-md text-label-md hover:bg-[rgba(255,255,255,0.08)] hover:border-white/20 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Data User</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant font-label-md text-label-md hover:bg-[rgba(255,255,255,0.08)] hover:border-white/20 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span>Absensi</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant font-label-md text-label-md hover:bg-[rgba(255,255,255,0.08)] hover:border-white/20 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="vpn_key">vpn_key</span>
+<span>Data PIN</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant font-label-md text-label-md hover:bg-[rgba(255,255,255,0.08)] hover:border-white/20 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span>Riwayat API</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant font-label-md text-label-md hover:bg-[rgba(255,255,255,0.08)] hover:border-white/20 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="webhook">webhook</span>
+<span>Riwayat Webhook</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant font-label-md text-label-md hover:bg-[rgba(255,255,255,0.08)] hover:border-white/20 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+<span>Riwayat Command</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant font-label-md text-label-md hover:bg-[rgba(255,255,255,0.08)] hover:border-white/20 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Pengaturan</span>
+</a>
+</nav>
+<div class="mt-auto p-md glass-card rounded-2xl flex items-center gap-md">
+<div class="w-8 h-8 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional close-up headshot of a technical manager in their 30s, looking confident and smiling slightly. The background is a clean, out-of-focus modern office environment with soft neon blue and dark violet lighting accents to match the manager console's tech aesthetic. High-quality lighting, sharp details, cinematic feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuf-ZlyGm5fxzQoMLN9G3RSsgBRtMHZ7XZOSDWJEU_dpbwUf1XSUz4jhP_DQFyZU0Hll8JLR68LVPso-SMmePAKIgx4sUFqkT_RUWsz49az5OjZFf20WfQ8GQ2mZcQBKiggrV1qM__IZpxXfT833yXPJCMeR7m2hQ5QqZemm7HSdlgXPYPB8weE1QK9Cw5hWkN6IpgqePg3wfU-S4qP2un6FbHLsDjgOdNrhlf7Y34WNV3LAelhvRQmA"/>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md text-on-surface">Admin Utama</p>
+<p class="text-[10px] text-on-surface-variant">System Root</p>
+</div>
+<span class="material-symbols-outlined text-sm opacity-40">logout</span>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="h-[64px] fixed top-0 right-0 left-[240px] z-50 border-b border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.05)] backdrop-blur-20 flex justify-between items-center px-xl w-full">
+<div class="flex items-center gap-md">
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">Dashboard</h2>
+<div class="h-4 w-[1px] bg-white/10"></div>
+<p class="font-body-md text-body-md text-on-surface-variant">Senin, 14 Oktober 2024</p>
+</div>
+<div class="flex items-center gap-lg">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors duration-300">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors duration-300">settings</button>
+<div class="w-8 h-8 rounded-full overflow-hidden cursor-pointer active:opacity-80 transition-opacity">
+<img class="w-full h-full object-cover" data-alt="A small circular avatar of a modern UI designer or tech worker with stylish glasses, rendered in a crisp 3D icon style. The lighting is cold, featuring cyber-blue and deep purple highlights on the face to align with the professional dark mode application. Minimalist, premium, and clean aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL4WLaml5UM1IjBeTs62lEl8tA0L-GB-Zu1Sg6R3hx0XSehpwZcpsN5ledUWgSFBZB4UDxBwn2pGEg4gDlGaQtjMbzwhUV1L5Wlb0KxrrpV3CTathUeP8kl6QQweCgYkLBXbWJdmoVB7ygWGHDXTwLgRRuO5j6CfkVv72C8u-59vXAkr9cP-1ukUXT3AD46_OjtHHnmGLd5BFInzUmQZQPnj-gtyqAaaUchY3YRG07u2jpFFYv9lJRXQ"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pl-[240px] pt-[64px] min-h-screen">
+<div class="p-xl max-w-[1600px] mx-auto space-y-xl">
+<!-- Stat Cards Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg">
+<!-- Card 1 -->
+<div class="glass-card rounded-[16px] p-lg flex flex-col gap-sm group">
+<div class="flex justify-between items-start">
+<div class="p-base rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+</div>
+<span class="bg-success/10 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-400/20">+12%</span>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-label-md">Total User</p>
+<h3 class="text-headline-lg font-headline-lg text-white mt-1">1,248</h3>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-card rounded-[16px] p-lg flex flex-col gap-sm group">
+<div class="flex justify-between items-start">
+<div class="p-base rounded-lg bg-emerald-500/10 text-emerald-500">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">schedule</span>
+</div>
+<span class="text-on-surface-variant text-[10px]">Real-time</span>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-label-md">Absensi Hari Ini</p>
+<h3 class="text-headline-lg font-headline-lg text-white mt-1">842</h3>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-card rounded-[16px] p-lg flex flex-col gap-sm group">
+<div class="flex justify-between items-start">
+<div class="p-base rounded-lg bg-purple-500/10 text-purple-500">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">fingerprint</span>
+</div>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-label-md">Total PIN</p>
+<h3 class="text-headline-lg font-headline-lg text-white mt-1">1,156</h3>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="glass-card rounded-[16px] p-lg flex flex-col gap-sm group">
+<div class="flex justify-between items-start">
+<div class="p-base rounded-lg bg-blue-400/10 text-blue-400">
+<span class="material-symbols-outlined">wifi</span>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+<div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+<span class="text-[10px] font-bold text-emerald-500 uppercase">Online</span>
+</div>
+</div>
+<div>
+<p class="text-on-surface-variant font-label-md text-label-md">Status Mesin</p>
+<h3 class="text-body-lg font-body-lg text-white mt-1 truncate">FS-8821-KM01</h3>
+</div>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<button class="glass-card rounded-[16px] p-lg flex flex-col items-center justify-center gap-md hover:bg-primary/5 group transition-all duration-300">
+<div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-[32px] text-primary" style="font-variation-settings: 'FILL' 1;">sync</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-on-surface">Sinkronisasi User</span>
+</button>
+<button class="glass-card rounded-[16px] p-lg flex flex-col items-center justify-center gap-md hover:bg-emerald-500/5 group transition-all duration-300">
+<div class="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-[32px] text-emerald-500" style="font-variation-settings: 'FILL' 1;">download</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-on-surface">Ambil Data Absensi</span>
+</button>
+<button class="glass-card rounded-[16px] p-lg flex flex-col items-center justify-center gap-md hover:bg-error/5 group transition-all duration-300">
+<div class="w-16 h-16 rounded-2xl bg-error/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-[32px] text-error" style="font-variation-settings: 'FILL' 1;">power_settings_new</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-on-surface">Restart Mesin</span>
+</button>
+</div>
+<!-- Recent Absensi Table Card -->
+<div class="glass-card rounded-[16px] overflow-hidden">
+<div class="p-lg border-b border-white/5 flex justify-between items-center bg-white/5 backdrop-blur-md">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">schedule</span>
+<h3 class="font-headline-sm text-headline-sm text-white">Absensi Terbaru</h3>
+</div>
+<a class="text-primary hover:underline font-label-md text-label-md flex items-center gap-1" href="#">
+                        Lihat Semua <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-white/5 text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+<th class="px-lg py-md font-semibold">No</th>
+<th class="px-lg py-md font-semibold">PIN</th>
+<th class="px-lg py-md font-semibold">Nama</th>
+<th class="px-lg py-md font-semibold">Waktu Scan</th>
+<th class="px-lg py-md font-semibold">Metode Verifikasi</th>
+<th class="px-lg py-md font-semibold text-center">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-lg py-md font-body-md text-on-surface-variant">1</td>
+<td class="px-lg py-md font-bold text-white">1001</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold">AS</div>
+<span>Aditya Saputra</span>
+</div>
+</td>
+<td class="px-lg py-md text-on-surface-variant font-body-md">14 Oct 2024, 08:02</td>
+<td class="px-lg py-md">
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-[11px] font-bold">Jari</span>
+</td>
+<td class="px-lg py-md text-center">
+<span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[11px] font-bold">Masuk</span>
+</td>
+</tr>
+<tr class="bg-white/2 hover:bg-white/5 transition-colors">
+<td class="px-lg py-md font-body-md text-on-surface-variant">2</td>
+<td class="px-lg py-md font-bold text-white">1005</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold">RL</div>
+<span>Rina Lestari</span>
+</div>
+</td>
+<td class="px-lg py-md text-on-surface-variant font-body-md">14 Oct 2024, 08:05</td>
+<td class="px-lg py-md">
+<span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[11px] font-bold">Wajah</span>
+</td>
+<td class="px-lg py-md text-center">
+<span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[11px] font-bold">Masuk</span>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-lg py-md font-body-md text-on-surface-variant">3</td>
+<td class="px-lg py-md font-bold text-white">1022</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold">BH</div>
+<span>Budi Hartono</span>
+</div>
+</td>
+<td class="px-lg py-md text-on-surface-variant font-body-md">14 Oct 2024, 08:06</td>
+<td class="px-lg py-md">
+<span class="px-3 py-1 rounded-full bg-white/10 text-on-surface-variant border border-white/20 text-[11px] font-bold">Password</span>
+</td>
+<td class="px-lg py-md text-center">
+<span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[11px] font-bold">Masuk</span>
+</td>
+</tr>
+<tr class="bg-white/2 hover:bg-white/5 transition-colors">
+<td class="px-lg py-md font-body-md text-on-surface-variant">4</td>
+<td class="px-lg py-md font-bold text-white">1014</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold">SM</div>
+<span>Siti Maryam</span>
+</div>
+</td>
+<td class="px-lg py-md text-on-surface-variant font-body-md">14 Oct 2024, 08:12</td>
+<td class="px-lg py-md">
+<span class="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-500 border border-cyan-500/20 text-[11px] font-bold">GPS</span>
+</td>
+<td class="px-lg py-md text-center">
+<span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[11px] font-bold">Masuk</span>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-lg py-md font-body-md text-on-surface-variant">5</td>
+<td class="px-lg py-md font-bold text-white">1009</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold">DP</div>
+<span>Dedi Prasetyo</span>
+</div>
+</td>
+<td class="px-lg py-md text-on-surface-variant font-body-md">14 Oct 2024, 08:15</td>
+<td class="px-lg py-md">
+<span class="px-3 py-1 rounded-full bg-purple-500/10 text-purple-500 border border-purple-500/20 text-[11px] font-bold">Kartu</span>
+</td>
+<td class="px-lg py-md text-center">
+<span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[11px] font-bold">Masuk</span>
+</td>
+</tr>
+<tr class="bg-white/2 hover:bg-white/5 transition-colors">
+<td class="px-lg py-md font-body-md text-on-surface-variant">6</td>
+<td class="px-lg py-md font-bold text-white">1055</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold">KW</div>
+<span>Kurnia Wijaya</span>
+</div>
+</td>
+<td class="px-lg py-md text-on-surface-variant font-body-md">14 Oct 2024, 09:30</td>
+<td class="px-lg py-md">
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-[11px] font-bold">Jari</span>
+</td>
+<td class="px-lg py-md text-center">
+<span class="px-3 py-1 rounded-full bg-error/10 text-error border border-error/20 text-[11px] font-bold">Keluar</span>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-lg py-md font-body-md text-on-surface-variant">7</td>
+<td class="px-lg py-md font-bold text-white">1041</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold">EN</div>
+<span>Eka Nanda</span>
+</div>
+</td>
+<td class="px-lg py-md text-on-surface-variant font-body-md">14 Oct 2024, 11:45</td>
+<td class="px-lg py-md">
+<span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[11px] font-bold">Wajah</span>
+</td>
+<td class="px-lg py-md text-center">
+<span class="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 text-[11px] font-bold">Break</span>
+</td>
+</tr>
+<tr class="bg-white/2 hover:bg-white/5 transition-colors">
+<td class="px-lg py-md font-body-md text-on-surface-variant">8</td>
+<td class="px-lg py-md font-bold text-white">1003</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold">MA</div>
+<span>Maya Anggraini</span>
+</div>
+</td>
+<td class="px-lg py-md text-on-surface-variant font-body-md">14 Oct 2024, 11:58</td>
+<td class="px-lg py-md">
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-[11px] font-bold">Jari</span>
+</td>
+<td class="px-lg py-md text-center">
+<span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[11px] font-bold">Masuk</span>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-lg py-md font-body-md text-on-surface-variant">9</td>
+<td class="px-lg py-md font-bold text-white">1088</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold">FS</div>
+<span>Fajar Subakti</span>
+</div>
+</td>
+<td class="px-lg py-md text-on-surface-variant font-body-md">14 Oct 2024, 12:05</td>
+<td class="px-lg py-md">
+<span class="px-3 py-1 rounded-full bg-purple-500/10 text-purple-500 border border-purple-500/20 text-[11px] font-bold">Kartu</span>
+</td>
+<td class="px-lg py-md text-center">
+<span class="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 text-[11px] font-bold">Break</span>
+</td>
+</tr>
+<tr class="bg-white/2 hover:bg-white/5 transition-colors">
+<td class="px-lg py-md font-body-md text-on-surface-variant">10</td>
+<td class="px-lg py-md font-bold text-white">1032</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold">RA</div>
+<span>Rahmat Aziz</span>
+</div>
+</td>
+<td class="px-lg py-md text-on-surface-variant font-body-md">14 Oct 2024, 13:10</td>
+<td class="px-lg py-md">
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-[11px] font-bold">Jari</span>
+</td>
+<td class="px-lg py-md text-center">
+<span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[11px] font-bold">Masuk</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interaction for buttons
+        document.querySelectorAll('button, a').forEach(elem => {
+            elem.addEventListener('mousedown', () => {
+                elem.style.transform = 'scale(0.98)';
+            });
+            elem.addEventListener('mouseup', () => {
+                elem.style.transform = 'scale(1)';
+            });
+            elem.addEventListener('mouseleave', () => {
+                elem.style.transform = 'scale(1)';
+            });
+        });
+
+        // Dynamic time update
+        const updateTime = () => {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const timeStr = now.toLocaleDateString('id-ID', options);
+            document.querySelector('.text-on-surface-variant.font-body-md').innerText = timeStr;
+        };
+        setInterval(updateTime, 60000);
+        updateTime();
+    </script>
+</body></html>
