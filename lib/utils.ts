@@ -21,6 +21,7 @@ export function formatDate(date: Date | string): string {
 
 export function formatVerifyType(code: number): string {
   if (code >= 0 && code <= 9) return "Jari";
+  if (code === 10 || code === 11) return "Vena";
   if (code === 15) return "Wajah";
   if (code === 2) return "Kartu";
   return "Tidak Diketahui";
@@ -34,6 +35,7 @@ export function formatStatusScan(code: number): string {
 
 export function formatVerifyBadgeClass(code: number): string {
   if (code >= 0 && code <= 9) return "bg-blue-500/15 text-blue-400 border border-blue-500/30";
+  if (code === 10 || code === 11) return "bg-purple-500/15 text-purple-400 border border-purple-500/30";
   if (code === 15) return "bg-green-500/15 text-green-400 border border-green-500/30";
   if (code === 2) return "bg-purple-500/15 text-purple-400 border border-purple-500/30";
   return "bg-gray-500/15 text-gray-400 border border-gray-500/30";
