@@ -84,13 +84,37 @@ export default function UserPage() {
   const handleSync = async () => {
     setSyncing(true);
     try {
+      const { data: before } = await createClient()
+        .from("users")
+        .select("id", { count: "exact", head: true })
+        .eq("cloud_id", cloudId);
+      const countBefore = before?.length ?? 0;
+
       await fetch("/mesin/get-userinfo", { method: "POST" });
-      showToast("Perintah terkirim. Menunggu respons mesin sekitar 10 detik...", "success");
-      setTimeout(async () => {
+      showToast("Perintah terkirim. Menunggu respons mesin...", "success");
+
+      let attempts = 0;
+      const maxAttempts = 15;
+      const pollInterval = setInterval(async () => {
+        attempts++;
         await loadUsers();
-        showToast("Sinkronisasi selesai", "success");
-        setSyncing(false);
-      }, 12000);
+
+        const { data: after } = await createClient()
+          .from("users")
+          .select("id", { count: "exact", head: true })
+          .eq("cloud_id", cloudId);
+        const countAfter = after?.length ?? 0;
+
+        if (countAfter > countBefore || attempts >= maxAttempts) {
+          clearInterval(pollInterval);
+          setSyncing(false);
+          if (countAfter > countBefore) {
+            showToast(`Sinkronisasi selesai! ${countAfter - countBefore} user baru ditemukan.`, "success");
+          } else {
+            showToast("Sinkronisasi selesai", "success");
+          }
+        }
+      }, 2000);
     } catch {
       showToast("Gagal mengirim perintah", "error");
       setSyncing(false);
