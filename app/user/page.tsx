@@ -366,15 +366,16 @@ export default function UserPage() {
                   <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">PIN</th>
                   <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Nama</th>
                   <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Privilege</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Jari</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Wajah</th>
+                   <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Jari</th>
+                   <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Wajah</th>
+                   <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Vena</th>
                   <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                     <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
                       Tidak ada data user
                     </td>
                   </tr>
@@ -394,8 +395,9 @@ export default function UserPage() {
                           {user.privilege === 14 ? "Admin" : "User Biasa"}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-200">{user.finger > 0 ? `${user.finger} jari` : "-"}</td>
-                      <td className="px-4 py-3 text-sm text-gray-200">{user.face > 0 ? "Ya" : "-"}</td>
+                       <td className="px-4 py-3 text-sm text-gray-200">{user.finger > 0 ? `${user.finger} jari` : "-"}</td>
+                       <td className="px-4 py-3 text-sm text-gray-200">{user.face > 0 ? "Ya" : "-"}</td>
+                       <td className="px-4 py-3 text-sm text-gray-200">{user.vein > 0 ? "Ya" : "-"}</td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <button onClick={() => openDetailDrawer(user)} className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors" title="Detail">
