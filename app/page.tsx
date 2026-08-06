@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import GlassCard from "./components/GlassCard";
 import { formatDate, formatVerifyType, formatStatusScan } from "@/lib/utils";
 import {
-  Users, Clock, Fingerprint, Wifi, ArrowRight, Loader2,
+  Users, Clock, Fingerprint, Wifi, ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -25,6 +25,11 @@ interface RecentAttendance {
   status_scan: number;
 }
 
+interface DayData {
+  label: string;
+  count: number;
+}
+
 export default function DashboardPage() {
   const [stats, setStats] = useState<StatCard[]>([
     { label: "Total User", value: "-", icon: Users, color: "text-[#1976D2]" },
@@ -33,6 +38,7 @@ export default function DashboardPage() {
     { label: "Status Mesin", value: "-", icon: Wifi, color: "text-blue-400" },
   ]);
   const [recent, setRecent] = useState<RecentAttendance[]>([]);
+  const [chartData, setChartData] = useState<DayData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -60,6 +66,27 @@ export default function DashboardPage() {
           { label: "Total PIN", value: String(pinsCount.count ?? 0), icon: Fingerprint, color: "text-purple-500" },
           { label: "Status Mesin", value: cloudId || "Belum Diatur", icon: Wifi, color: "text-blue-400" },
         ]);
+
+        const days: DayData[] = [];
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const dateStr = d.toISOString().split("T")[0];
+          const nextDate = new Date(d);
+          nextDate.setDate(nextDate.getDate() + 1);
+          const nextDateStr = nextDate.toISOString().split("T")[0];
+
+          const { count } = await supabase
+            .from("attendance_logs")
+            .select("id", { count: "exact", head: true })
+            .eq("cloud_id", cloudId)
+            .gte("scan_time", dateStr)
+            .lt("scan_time", nextDateStr);
+
+          const dayLabel = d.toLocaleDateString("id-ID", { weekday: "short" });
+          days.push({ label: dayLabel, count: count ?? 0 });
+        }
+        setChartData(days);
 
         const { data: recentData } = await supabase
           .from("attendance_logs")
@@ -111,6 +138,12 @@ export default function DashboardPage() {
         <GlassCard className="p-6">
           <div className="animate-pulse space-y-4">
             <div className="h-6 w-48 bg-white/10 rounded" />
+            <div className="h-48 bg-white/5 rounded" />
+          </div>
+        </GlassCard>
+        <GlassCard className="p-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-6 w-48 bg-white/10 rounded" />
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="h-12 bg-white/5 rounded" />
             ))}
@@ -119,6 +152,8 @@ export default function DashboardPage() {
       </div>
     );
   }
+
+  const maxCount = Math.max(...chartData.map((d) => d.count), 1);
 
   return (
     <div className="space-y-4">
@@ -132,14 +167,14 @@ export default function DashboardPage() {
                   <Icon className="w-5 h-5" />
                 </div>
                 {card.label === "Status Mesin" && (
-                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-500/15 border border-green-500/30">
+                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-500/10">
                     <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[10px] font-bold text-green-400 uppercase">Online</span>
+                    <span className="text-[10px] font-medium text-green-400 uppercase">Online</span>
                   </div>
                 )}
               </div>
               <div>
-                <p className="text-sm text-gray-400">{card.label}</p>
+                <p className="text-sm text-gray-500">{card.label}</p>
                 <h3 className="text-2xl font-bold text-white mt-1">{card.value}</h3>
               </div>
             </GlassCard>
@@ -147,70 +182,101 @@ export default function DashboardPage() {
         })}
       </div>
 
+      <GlassCard className="p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-sm font-semibold text-gray-300">Absensi 7 Hari Terakhir</h3>
+          <span className="text-[11px] text-gray-500">{chartData.reduce((a, b) => a + b.count, 0)} total scan</span>
+        </div>
+        <div className="flex items-end gap-2 h-40">
+          {chartData.map((day, i) => {
+            const height = maxCount > 0 ? (day.count / maxCount) * 100 : 0;
+            const isToday = i === chartData.length - 1;
+            return (
+              <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
+                <span className="text-[11px] text-gray-500 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                  {day.count}
+                </span>
+                <div className="w-full relative" style={{ height: "100px" }}>
+                  <div
+                    className={`absolute bottom-0 w-full rounded-t-md transition-all duration-500 ease-out ${
+                      isToday ? "bg-[#1976D2]" : "bg-[#1976D2]/30"
+                    }`}
+                    style={{ height: `${Math.max(height, 2)}%` }}
+                  />
+                </div>
+                <span className={`text-[11px] ${isToday ? "text-[#1976D2] font-medium" : "text-gray-500"}`}>
+                  {day.label}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </GlassCard>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Link href="/user" className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-[#1976D2]/5 group transition-all duration-300">
-          <div className="w-16 h-16 rounded-2xl bg-[#1976D2]/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-            <Users className="w-8 h-8 text-[#1976D2]" />
+        <Link href="/user" className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-[#1976D2]/[0.04] group transition-all duration-300">
+          <div className="w-14 h-14 rounded-2xl bg-[#1976D2]/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <Users className="w-7 h-7 text-[#1976D2]" />
           </div>
-          <span className="text-lg font-semibold text-white">Data User</span>
+          <span className="text-sm font-medium text-gray-300">Data User</span>
         </Link>
-        <Link href="/absensi" className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-emerald-500/5 group transition-all duration-300">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-            <Clock className="w-8 h-8 text-emerald-500" />
+        <Link href="/absensi" className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-emerald-500/[0.04] group transition-all duration-300">
+          <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <Clock className="w-7 h-7 text-emerald-500" />
           </div>
-          <span className="text-lg font-semibold text-white">Data Absensi</span>
+          <span className="text-sm font-medium text-gray-300">Data Absensi</span>
         </Link>
-        <Link href="/pengaturan" className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-red-500/5 group transition-all duration-300">
-          <div className="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-            <Wifi className="w-8 h-8 text-red-500" />
+        <Link href="/pengaturan" className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-red-500/[0.04] group transition-all duration-300">
+          <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <Wifi className="w-7 h-7 text-red-500" />
           </div>
-          <span className="text-lg font-semibold text-white">Pengaturan</span>
+          <span className="text-sm font-medium text-gray-300">Pengaturan</span>
         </Link>
       </div>
 
       <GlassCard className="overflow-hidden">
-        <div className="p-5 border-b border-white/10 flex justify-between items-center bg-white/5">
+        <div className="p-5 border-b border-white/[0.06] flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <Clock className="w-5 h-5 text-[#1976D2]" />
-            <h3 className="text-xl font-semibold text-white">Absensi Terbaru</h3>
+            <Clock className="w-4 h-4 text-[#1976D2]" />
+            <h3 className="text-sm font-semibold text-gray-300">Absensi Terbaru</h3>
           </div>
-          <Link className="text-[#1976D2] hover:underline text-sm font-medium flex items-center gap-1" href="/absensi">
-            Lihat Semua <ArrowRight className="w-4 h-4" />
+          <Link className="text-[#1976D2] hover:text-[#1565C0] text-xs font-medium flex items-center gap-1 transition-colors" href="/absensi">
+            Lihat Semua <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left">
             <thead>
-              <tr className="bg-white/5 border-b border-white/10">
-                <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">No</th>
-                <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">PIN</th>
-                <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Nama</th>
-                <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Waktu Scan</th>
-                <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Metode</th>
-                <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold text-center">Status</th>
+              <tr className="border-b border-white/[0.06]">
+                <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">No</th>
+                <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">PIN</th>
+                <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">Nama</th>
+                <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">Waktu Scan</th>
+                <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">Metode</th>
+                <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium text-center">Status</th>
               </tr>
             </thead>
             <tbody>
               {recent.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                  <td colSpan={6} className="px-4 py-12 text-center text-gray-500 text-sm">
                     Belum ada data absensi
                   </td>
                 </tr>
               ) : (
                 recent.map((row, idx) => (
-                  <tr key={row.id} className="hover:bg-white/5 border-b border-white/5 transition-colors">
-                    <td className="px-4 py-3 text-sm text-gray-200">{idx + 1}</td>
-                    <td className="px-4 py-3 text-sm font-bold text-white font-mono">{row.pin}</td>
-                    <td className="px-4 py-3 text-sm text-gray-200">{row.name}</td>
-                    <td className="px-4 py-3 text-sm text-gray-200">{formatDate(row.scan_time)}</td>
+                  <tr key={row.id} className="hover:bg-white/[0.02] border-b border-white/[0.04] transition-colors duration-200">
+                    <td className="px-4 py-3 text-sm text-gray-500">{idx + 1}</td>
+                    <td className="px-4 py-3 text-sm font-semibold text-white font-mono">{row.pin}</td>
+                    <td className="px-4 py-3 text-sm text-gray-300">{row.name}</td>
+                    <td className="px-4 py-3 text-sm text-gray-400">{formatDate(row.scan_time)}</td>
                     <td className="px-4 py-3">
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-[#1976D2]/10 text-[#1976D2]">
                         {formatVerifyType(row.verify)}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${row.status_scan === 0 ? "bg-green-500/15 text-green-400 border border-green-500/30" : row.status_scan === 1 ? "bg-red-500/15 text-red-400 border border-red-500/30" : "bg-gray-500/15 text-gray-400 border border-gray-500/30"}`}>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${row.status_scan === 0 ? "bg-emerald-500/10 text-emerald-400" : row.status_scan === 1 ? "bg-red-500/10 text-red-400" : "bg-gray-500/10 text-gray-400"}`}>
                         {formatStatusScan(row.status_scan)}
                       </span>
                     </td>
