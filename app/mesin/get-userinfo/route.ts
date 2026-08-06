@@ -27,9 +27,7 @@ export async function POST() {
 
     let lastResult;
     for (const { pin } of pins) {
-      lastResult = await callFingerspot("get_userinfo", {
-        data: { pin },
-      });
+      lastResult = await callFingerspot("get_userinfo", { pin });
     }
 
     return NextResponse.json(lastResult);
