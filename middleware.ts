@@ -34,7 +34,8 @@ export async function middleware(request: NextRequest) {
   if (
     !user &&
     pathname !== "/login" &&
-    pathname !== "/register"
+    pathname !== "/register" &&
+    pathname !== "/api/webhook"
   ) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";

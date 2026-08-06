@@ -1,9 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
 
 interface FingerspotResponse {
   success: boolean;
@@ -17,6 +19,7 @@ export async function callFingerspot(
   body: Record<string, unknown>
 ): Promise<FingerspotResponse> {
   const transId = Date.now().toString();
+  const supabase = getSupabase();
 
   const { data: settings } = await supabase
     .from("settings")
