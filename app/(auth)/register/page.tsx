@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import { Loader2, Fingerprint } from "lucide-react";
+import { Loader2, CheckCircle } from "lucide-react";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -60,9 +60,7 @@ export default function RegisterPage() {
         </div>
         <div className="relative z-10 w-full max-w-md mx-4">
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-green-500/10 flex items-center justify-center mx-auto mb-4">
-              <Fingerprint className="w-8 h-8 text-green-400" />
-            </div>
+            <CheckCircle className="w-10 h-10 text-green-400 mx-auto mb-4" />
             <h2 className="text-xl font-bold text-white mb-2">Registrasi Berhasil!</h2>
             <p className="text-sm text-gray-400 mb-6">
               Akun Anda telah dibuat. Silakan cek email untuk verifikasi, lalu login.
@@ -89,11 +87,8 @@ export default function RegisterPage() {
       <div className="relative z-10 w-full max-w-md mx-4">
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
           <div className="flex flex-col items-center mb-8">
-            <div className="w-14 h-14 rounded-2xl bg-[#1976D2] flex items-center justify-center mb-4">
-              <Fingerprint className="w-8 h-8 text-white" />
-            </div>
             <h1 className="text-2xl font-bold text-white">Register</h1>
-            <p className="text-sm text-gray-400 mt-1">Buat akun baru</p>
+            <p className="text-sm text-gray-500 mt-1">Buat akun baru</p>
           </div>
 
           <form onSubmit={handleRegister} className="space-y-4">

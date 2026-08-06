@@ -188,28 +188,28 @@ export default function PinPage() {
             ))}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+           <div className="overflow-x-auto">
+            <table className="w-full text-left">
               <thead>
-                <tr className="bg-white/5 border-b border-white/10">
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">No</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">PIN</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Tanggal Fetch</th>
+                <tr className="border-b border-white/[0.06]">
+                  <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">No</th>
+                  <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">PIN</th>
+                  <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">Tanggal Fetch</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className="px-4 py-8 text-center text-gray-500">
+                    <td colSpan={3} className="px-4 py-12 text-center text-gray-500 text-sm">
                       {pins.length === 0 ? "Belum ada data PIN" : "PIN tidak ditemukan"}
                     </td>
                   </tr>
                 ) : (
                   filtered.map((p, idx) => (
-                    <tr key={p.id} className="hover:bg-white/5 border-b border-white/5 transition-colors">
-                      <td className="px-4 py-3 text-sm text-gray-200">{idx + 1}</td>
-                      <td className="px-4 py-3 text-sm font-bold text-white font-mono">{p.pin}</td>
-                      <td className="px-4 py-3 text-sm text-gray-200">{formatDate(p.fetched_at)}</td>
+                    <tr key={p.id} className="hover:bg-white/[0.02] border-b border-white/[0.04] transition-colors duration-200">
+                      <td className="px-4 py-3 text-sm text-gray-500">{idx + 1}</td>
+                      <td className="px-4 py-3 text-sm font-semibold text-white font-mono">{p.pin}</td>
+                      <td className="px-4 py-3 text-sm text-gray-400">{formatDate(p.fetched_at)}</td>
                     </tr>
                   ))
                 )}

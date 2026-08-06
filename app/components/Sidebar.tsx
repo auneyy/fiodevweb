@@ -36,56 +36,41 @@ export default function Sidebar({ cloudId }: { cloudId?: string }) {
   }
 
   return (
-    <aside className="w-[200px] h-screen fixed left-0 top-0 border-r border-white/10 bg-[rgba(10,10,15,0.9)] backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex flex-col py-6 px-3 z-[60]">
-      <div className="mb-8 px-2 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-[#1976D2] flex items-center justify-center shrink-0">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4" />
-            <path d="M14 13.12c0 2.38 0 6.38-1 8.88" />
-            <path d="M17.29 21.02c.12-.6.43-2.3.5-3.02" />
-            <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4" />
-            <path d="M6.62 21.61c.12-.6.43-2.3.5-3.02" />
-            <path d="M10.94 16.3c.36-.62.63-1.64.72-2.32" />
-            <path d="M17.68 14.18c.52-.94.75-2.06.75-3.18 0-2.12-1.34-3.75-3-3.75s-3 1.63-3 3.75c0 .75.15 1.45.42 2.07" />
-            <path d="M12 22a8 8 0 0 0 8-8" />
-            <path d="M12 22a8 8 0 0 1-8-8" />
-          </svg>
-        </div>
-        <div className="min-w-0">
-          <h1 className="text-sm font-bold text-white tracking-tight truncate">Run API Quick</h1>
-          <p className="text-[10px] text-gray-400 tracking-widest uppercase">Manage API</p>
-        </div>
+    <aside className="w-[200px] h-screen fixed left-0 top-0 border-r border-white/[0.06] bg-[rgba(10,10,15,0.85)] backdrop-blur-xl flex flex-col py-6 px-3 z-[60]">
+      <div className="mb-8 px-2">
+          <h1 className="text-sm font-bold text-white tracking-tight">Run API Quick</h1>
+          <p className="text-[10px] text-gray-500 tracking-widest uppercase mt-0.5">Manage API</p>
       </div>
-      <nav className="flex-1 space-y-1 overflow-y-auto">
+      <nav className="flex-1 space-y-0.5 overflow-y-auto">
         {menus.map((menu) => {
           const isActive = menu.href === "/" ? pathname === "/" : pathname.startsWith(menu.href);
           const Icon = menu.icon;
           return (
             <Link key={menu.href} href={menu.href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-300 border-r-2 border-transparent",
-                isActive ? "text-[#1976D2] font-semibold border-r-[#1976D2] bg-[rgba(25,118,210,0.1)]"
-                         : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
+                "flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-200",
+                isActive ? "text-[#1976D2] font-medium bg-[#1976D2]/[0.08]"
+                         : "text-gray-500 hover:bg-white/[0.03] hover:text-gray-300"
               )}>
-              <Icon className="w-5 h-5 shrink-0" />
+              <Icon className="w-4 h-4 shrink-0" />
               <span>{menu.label}</span>
             </Link>
           );
         })}
       </nav>
       {cloudId && (
-        <div className="mb-4 mx-2 px-3 py-2 rounded-xl bg-white/5 border border-white/5">
+        <div className="mb-4 mx-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.04]">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-xs text-gray-400 truncate">{cloudId}</span>
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[11px] text-gray-500 truncate">{cloudId}</span>
           </div>
         </div>
       )}
       <button
         onClick={handleLogout}
-        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:bg-red-500/10 hover:text-red-400 transition-all duration-300 border-t border-white/5 pt-4 mt-2"
+        className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] text-gray-500 hover:bg-red-500/[0.06] hover:text-red-400 transition-all duration-200 border-t border-white/[0.04] pt-4 mt-2"
       >
-        <LogOut className="w-5 h-5 shrink-0" />
+        <LogOut className="w-4 h-4 shrink-0" />
         <span>Logout</span>
       </button>
     </aside>
