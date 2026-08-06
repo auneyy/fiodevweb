@@ -123,9 +123,10 @@ export async function POST(request: NextRequest) {
         break;
       }
 
-      case "get_all_pin": {
+      case "get_all_pin":
+      case "get_userid_list": {
         const pins = Array.isArray(data) ? data : data ? [data] : [];
-        console.log("[webhook] get_all_pin received", pins.length, "pins");
+        console.log("[webhook]", body.type, "received", pins.length, "pins");
         for (const item of pins) {
           const { error } = await supabase.from("device_pins").upsert(
             {
@@ -135,7 +136,7 @@ export async function POST(request: NextRequest) {
             },
             { onConflict: "cloud_id,pin" }
           );
-          if (error) console.error("[webhook] get_all_pin upsert error:", error);
+          if (error) console.error("[webhook]", body.type, "upsert error:", error);
         }
         break;
       }
