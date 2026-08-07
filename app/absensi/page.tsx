@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getClientCloudId } from "@/lib/user-settings-client";
 import GlassCard from "../components/GlassCard";
 import { formatDate, formatVerifyType, formatStatusScan } from "@/lib/utils";
 import { Clock, Search, Download, Loader2 } from "lucide-react";
@@ -32,13 +33,14 @@ export default function AbsensiPage() {
 
   const loadLogs = async () => {
     setLoading(true);
+    const cid = await getClientCloudId();
+    setCloudId(cid || "");
+    if (!cid) {
+      setLogs([]);
+      setLoading(false);
+      return;
+    }
     const supabase = createClient();
-    const { data: settings } = await supabase
-      .from("settings")
-      .select("key, value")
-      .in("key", ["cloud_id"]);
-    const cid = settings?.find((s) => s.key === "cloud_id")?.value || "";
-    setCloudId(cid);
 
     const { data } = await supabase
       .from("attendance_logs")

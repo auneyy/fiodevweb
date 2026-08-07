@@ -2,18 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getClientCloudId } from "@/lib/user-settings-client";
 import GlassCard from "../components/GlassCard";
 import {
   Settings, Save, Loader2, Copy, Check, RefreshCw, AlertTriangle, Clock,
 } from "lucide-react";
 
-interface Setting {
-  key: string;
-  value: string;
-}
-
 export default function PengaturanPage() {
-  const [settings, setSettings] = useState<Setting[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [cloudId, setCloudId] = useState("");
@@ -32,15 +27,18 @@ export default function PengaturanPage() {
   const loadSettings = async () => {
     setLoading(true);
     const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     const { data } = await supabase
-      .from("settings")
-      .select("key, value");
-    setSettings(data || []);
-
-    const cid = data?.find((s) => s.key === "cloud_id")?.value || "";
-    const ak = data?.find((s) => s.key === "api_key")?.value || "";
-    setCloudId(cid);
-    setApiKey(ak);
+      .from("user_settings")
+      .select("cloud_id, api_key")
+      .eq("user_id", user.id)
+      .single();
+    setCloudId(data?.cloud_id || "");
+    setApiKey(data?.api_key || "");
     setLoading(false);
   };
 
@@ -53,12 +51,15 @@ export default function PengaturanPage() {
     setSaving(true);
     try {
       const supabase = createClient();
-      await supabase.from("settings").upsert(
-        [
-          { key: "cloud_id", value: cloudId },
-          { key: "api_key", value: apiKey },
-        ],
-        { onConflict: "key" }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        showToast("Tidak terautentikasi", "error");
+        setSaving(false);
+        return;
+      }
+      await supabase.from("user_settings").upsert(
+        { user_id: user.id, cloud_id: cloudId, api_key: apiKey },
+        { onConflict: "user_id" }
       );
       showToast("Konfigurasi berhasil disimpan", "success");
     } catch {

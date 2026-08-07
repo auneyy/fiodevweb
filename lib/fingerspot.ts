@@ -16,18 +16,23 @@ interface FingerspotResponse {
 
 export async function callFingerspot(
   endpoint: string,
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
+  credentials?: { apiKey: string; cloudId: string }
 ): Promise<FingerspotResponse> {
   const transId = Date.now().toString();
   const supabase = getSupabase();
 
-  const { data: settings } = await supabase
-    .from("settings")
-    .select("key, value")
-    .in("key", ["api_key", "cloud_id"]);
+  let apiKey = credentials?.apiKey || "";
+  let cloudId = credentials?.cloudId || "";
 
-  const apiKey = settings?.find((s) => s.key === "api_key")?.value || "";
-  const cloudId = settings?.find((s) => s.key === "cloud_id")?.value || "";
+  if (!apiKey || !cloudId) {
+    const { data: settings } = await supabase
+      .from("settings")
+      .select("key, value")
+      .in("key", ["api_key", "cloud_id"]);
+    apiKey = apiKey || settings?.find((s) => s.key === "api_key")?.value || "";
+    cloudId = cloudId || settings?.find((s) => s.key === "cloud_id")?.value || "";
+  }
 
   console.log(`[fingerspot] endpoint=${endpoint}, apiKey=${apiKey ? apiKey.substring(0, 10) + "..." : "EMPTY"}, cloudId=${cloudId || "EMPTY"}`);
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getClientCloudId } from "@/lib/user-settings-client";
 import GlassCard from "./components/GlassCard";
 import { formatDate, formatVerifyType, formatStatusScan } from "@/lib/utils";
 import {
@@ -45,12 +46,7 @@ export default function DashboardPage() {
     const supabase = createClient();
     const fetchData = async () => {
       try {
-        const { data: settings } = await supabase
-          .from("settings")
-          .select("key, value")
-          .in("key", ["cloud_id"]);
-
-        const cloudId = settings?.find((s) => s.key === "cloud_id")?.value || "";
+        const cloudId = await getClientCloudId();
 
         const [usersCount, attCount, pinsCount] = await Promise.all([
           supabase.from("users").select("id", { count: "exact", head: true }).eq("cloud_id", cloudId),

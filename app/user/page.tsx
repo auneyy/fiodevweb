@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getClientCloudId } from "@/lib/user-settings-client";
 import GlassCard from "../components/GlassCard";
 import { cn, encodePhotoToTemplate } from "@/lib/utils";
 import {
@@ -54,14 +55,14 @@ export default function UserPage() {
 
   const loadUsers = async () => {
     setLoading(true);
+    const cid = await getClientCloudId();
+    setCloudId(cid || "");
+    if (!cid) {
+      setUsers([]);
+      setLoading(false);
+      return;
+    }
     const supabase = createClient();
-    const { data: settings } = await supabase
-      .from("settings")
-      .select("key, value")
-      .in("key", ["cloud_id"]);
-    const cid = settings?.find((s) => s.key === "cloud_id")?.value || "";
-    setCloudId(cid);
-
     const { data } = await supabase
       .from("users")
       .select("*")

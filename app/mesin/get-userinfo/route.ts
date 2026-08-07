@@ -1,20 +1,22 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { callFingerspot } from "@/lib/fingerspot";
+import { getRequestUserCloudId } from "@/lib/request-user";
 import { createClient } from "@supabase/supabase-js";
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
+    const cloudId = await getRequestUserCloudId(request.cookies);
+    if (!cloudId) {
+      return NextResponse.json(
+        { success: false, message: "Tidak terautentikasi atau cloud_id belum diatur" },
+        { status: 401 }
+      );
+    }
+
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
-
-    const { data: settings } = await supabase
-      .from("settings")
-      .select("key, value")
-      .in("key", ["cloud_id"]);
-
-    const cloudId = settings?.find((s) => s.key === "cloud_id")?.value || "";
 
     const { data: pins } = await supabase
       .from("device_pins")
