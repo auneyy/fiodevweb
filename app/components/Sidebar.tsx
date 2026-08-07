@@ -38,17 +38,6 @@ export default function Sidebar({ cloudId }: { cloudId?: string }) {
   return (
     <aside className="w-[68px] h-screen fixed left-0 top-0 border-r border-white/[0.06] bg-[rgba(22,22,30,0.95)] backdrop-blur-xl flex flex-col py-6 z-[60] overflow-hidden transition-[width] duration-300 ease-in-out hover:w-[220px]">
 
-      {/* Logo */}
-      <div className="mb-8 px-3 flex items-center gap-2 min-h-[24px]">
-        <span className="text-sm font-bold text-white shrink-0">R</span>
-        <span className="sidebar-label hidden text-sm font-bold text-white whitespace-nowrap">
-          un API Quick
-        </span>
-        <p className="sidebar-label hidden ml-auto text-[10px] text-gray-500 tracking-widest uppercase">
-          Manage API
-        </p>
-      </div>
-
       {/* Nav */}
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-2">
         {menus.map((menu) => {
