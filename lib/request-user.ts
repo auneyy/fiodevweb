@@ -36,15 +36,7 @@ export async function getRequestUserCloudId(cookies: {
     .eq("user_id", userId)
     .single();
 
-  if (data?.cloud_id) return data.cloud_id;
-
-  // Fallback to global settings
-  const { data: settings } = await sb
-    .from("settings")
-    .select("key, value")
-    .in("key", ["cloud_id"]);
-
-  return settings?.find((s) => s.key === "cloud_id")?.value || null;
+  return data?.cloud_id || null;
 }
 
 export async function getRequestUserCredentials(cookies: {
@@ -60,18 +52,6 @@ export async function getRequestUserCredentials(cookies: {
     .eq("user_id", userId)
     .single();
 
-  if (data?.cloud_id && data?.api_key) {
-    return { cloudId: data.cloud_id, apiKey: data.api_key };
-  }
-
-  // Fallback to global settings
-  const { data: settings } = await sb
-    .from("settings")
-    .select("key, value")
-    .in("key", ["api_key", "cloud_id"]);
-
-  return {
-    cloudId: data?.cloud_id || settings?.find((s) => s.key === "cloud_id")?.value || "",
-    apiKey: data?.api_key || settings?.find((s) => s.key === "api_key")?.value || "",
-  };
+  if (!data?.cloud_id || !data?.api_key) return null;
+  return { cloudId: data.cloud_id, apiKey: data.api_key };
 }

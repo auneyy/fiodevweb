@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getClientCloudId, getUserOwnCloudId } from "@/lib/user-settings-client";
+import { getClientCloudId } from "@/lib/user-settings-client";
 import GlassCard from "./components/GlassCard";
 import { formatDate, formatVerifyType, formatStatusScan } from "@/lib/utils";
 import {
@@ -47,9 +47,8 @@ export default function DashboardPage() {
     const supabase = createClient();
     const fetchData = async () => {
       try {
-        const ownCloudId = await getUserOwnCloudId();
-        const cloudId = ownCloudId || await getClientCloudId();
-        setHasConfig(!!ownCloudId);
+        const cloudId = await getClientCloudId();
+        setHasConfig(!!cloudId);
 
         if (!cloudId) {
           setStats([
@@ -75,7 +74,7 @@ export default function DashboardPage() {
           { label: "Total User", value: String(usersCount.count ?? 0), icon: Users, color: "text-[#1976D2]" },
           { label: "Absensi Hari Ini", value: String(attCount.count ?? 0), icon: Clock, color: "text-[#1976D2]" },
           { label: "Total PIN", value: String(pinsCount.count ?? 0), icon: Fingerprint, color: "text-purple-500" },
-          { label: "Status Mesin", value: ownCloudId ? cloudId : "Belum Diatur", icon: Wifi, color: ownCloudId ? "text-blue-400" : "text-gray-500" },
+          { label: "Status Mesin", value: cloudId, icon: Wifi, color: "text-blue-400" },
         ]);
 
         const days: DayData[] = [];
