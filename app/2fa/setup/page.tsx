@@ -14,6 +14,7 @@ export default function TwoFactorSetupPage() {
   const [totpUri, setTotpUri] = useState("");
   const [secret, setSecret] = useState("");
   const [factorId, setFactorId] = useState("");
+  const [challengeId, setChallengeId] = useState("");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(true);
   const [verifying, setVerifying] = useState(false);
@@ -56,6 +57,19 @@ export default function TwoFactorSetupPage() {
       setTotpUri(data.totp.uri);
       setSecret(data.totp.secret);
 
+      // Create challenge for enrollment verification
+      const { data: challenge, error: challengeError } = await supabase.auth.mfa.challenge({
+        factorId: data.id,
+      });
+
+      if (challengeError) {
+        setError(challengeError.message);
+        setLoading(false);
+        return;
+      }
+
+      setChallengeId(challenge.id);
+
       // Generate QR code
       try {
         const url = await QRCode.toDataURL(data.totp.uri.toUpperCase(), {
@@ -86,13 +100,16 @@ export default function TwoFactorSetupPage() {
     const supabase = createClient();
     const { error: verifyError } = await supabase.auth.mfa.verify({
       factorId,
+      challengeId,
       code,
-      challengeType: "enrollment",
     });
 
     if (verifyError) {
       setError("Kode tidak valid. Coba lagi.");
       setVerifying(false);
+      // Create new challenge
+      const { data: newChallenge } = await supabase.auth.mfa.challenge({ factorId });
+      if (newChallenge) setChallengeId(newChallenge.id);
       return;
     }
 

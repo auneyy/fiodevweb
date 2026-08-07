@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new NextRequest(request.url);
+  const { searchParams, origin } = request.nextUrl;
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type") || "signup";
   const next = searchParams.get("next") ?? "/";
