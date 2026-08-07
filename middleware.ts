@@ -31,24 +31,47 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  if (
-    !user &&
-    pathname !== "/login" &&
-    pathname !== "/register" &&
-    pathname !== "/api/webhook"
-  ) {
+  const publicPaths = ["/login", "/register", "/api/webhook", "/auth/callback", "/2fa/setup"];
+  const isPublicPath = publicPaths.includes(pathname) || pathname.startsWith("/auth/");
+
+  // Not logged in → redirect to login
+  if (!user && !isPublicPath) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  if (
-    user &&
-    (pathname === "/login" || pathname === "/register")
-  ) {
+  // Logged in but on auth pages → redirect to dashboard
+  if (user && (pathname === "/login" || pathname === "/register")) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     return NextResponse.redirect(url);
+  }
+
+  // Check 2FA: if user has verified TOTP factor but AAL is only aal1
+  if (user && !isPublicPath) {
+    const { data: factors } = await supabase.auth.mfa.listFactors();
+    const hasVerifiedTotp = factors?.totp?.some((f) => f.status === "verified");
+
+    if (hasVerifiedTotp) {
+      const { data: aalData } = await supabase.auth.getAuthenticatorAssuranceLevel();
+      const currentLevel = aalData?.currentLevel;
+      const nextLevel = aalData?.nextLevel;
+
+      // User needs to verify 2FA
+      if (currentLevel === "aal1" && nextLevel === "aal2" && pathname !== "/2fa/verify") {
+        const url = request.nextUrl.clone();
+        url.pathname = "/2fa/verify";
+        return NextResponse.redirect(url);
+      }
+
+      // User already at aal2 but trying to access 2FA pages
+      if (currentLevel === "aal2" && pathname.startsWith("/2fa/verify")) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/";
+        return NextResponse.redirect(url);
+      }
+    }
   }
 
   return supabaseResponse;

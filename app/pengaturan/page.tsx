@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getClientCloudId } from "@/lib/user-settings-client";
 import GlassCard from "../components/GlassCard";
 import {
-  Settings, Save, Loader2, Copy, Check, RefreshCw, AlertTriangle, Clock,
+  Settings, Save, Loader2, Copy, Check, RefreshCw, AlertTriangle, Clock, Shield,
 } from "lucide-react";
 
 export default function PengaturanPage() {
@@ -19,10 +18,7 @@ export default function PengaturanPage() {
   const [copied, setCopied] = useState(false);
   const [showRestartDialog, setShowRestartDialog] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
-
-  useEffect(() => {
-    loadSettings();
-  }, []);
+  const [twoFaEnabled, setTwoFaEnabled] = useState(false);
 
   const loadSettings = async () => {
     setLoading(true);
@@ -32,6 +28,12 @@ export default function PengaturanPage() {
       setLoading(false);
       return;
     }
+
+    // Check 2FA status
+    const { data: factors } = await supabase.auth.mfa.listFactors();
+    const hasVerifiedTotp = factors?.totp?.some((f) => f.status === "verified");
+    setTwoFaEnabled(!!hasVerifiedTotp);
+
     const { data } = await supabase
       .from("user_settings")
       .select("cloud_id, api_key")
@@ -41,6 +43,11 @@ export default function PengaturanPage() {
     setApiKey(data?.api_key || "");
     setLoading(false);
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void loadSettings();
+  }, []);
 
   const showToast = (message: string, type: "success" | "error") => {
     setToast({ message, type });
@@ -263,6 +270,34 @@ export default function PengaturanPage() {
                 </div>
               </div>
             </div>
+          </GlassCard>
+
+          <GlassCard className="p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-[#1976D2]" />
+                <h3 className="text-lg font-bold text-white">2FA</h3>
+              </div>
+              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${twoFaEnabled ? "bg-green-500/10 text-green-400" : "bg-gray-500/10 text-gray-400"}`}>
+                {twoFaEnabled ? "Aktif" : "Nonaktif"}
+              </span>
+            </div>
+            <p className="text-xs text-gray-400 mb-3">
+              {twoFaEnabled
+                ? "Autentikasi dua faktor sudah aktif. Anda akan diminta memasukkan kode setiap login."
+                : "Aktifkan 2FA untuk keamanan tambahan. Memerlukan aplikasi authenticator."}
+            </p>
+            <button
+              onClick={() => window.location.href = twoFaEnabled ? "/2fa/verify" : "/2fa/setup"}
+              className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                twoFaEnabled
+                  ? "bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10"
+                  : "bg-[#1976D2] hover:bg-[#1565C0] text-white"
+              }`}
+            >
+              <Shield className="w-4 h-4" />
+              {twoFaEnabled ? "Kelola 2FA" : "Aktifkan 2FA"}
+            </button>
           </GlassCard>
         </div>
       </div>
