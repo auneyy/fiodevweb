@@ -34,7 +34,7 @@ interface DayData {
 export default function DashboardPage() {
   const [stats, setStats] = useState<StatCard[]>([
     { label: "Total User", value: "-", icon: Users, color: "text-[#1976D2]" },
-    { label: "Absensi Hari Ini", value: "-", icon: Clock, color: "text-emerald-500" },
+    { label: "Absensi Hari Ini", value: "-", icon: Clock, color: "text-[#1976D2]" },
     { label: "Total PIN", value: "-", icon: Fingerprint, color: "text-purple-500" },
     { label: "Status Mesin", value: "-", icon: Wifi, color: "text-blue-400" },
   ]);
@@ -54,7 +54,7 @@ export default function DashboardPage() {
         if (!cloudId) {
           setStats([
             { label: "Total User", value: "0", icon: Users, color: "text-[#1976D2]" },
-            { label: "Absensi Hari Ini", value: "0", icon: Clock, color: "text-emerald-500" },
+            { label: "Absensi Hari Ini", value: "0", icon: Clock, color: "text-[#1976D2]" },
             { label: "Total PIN", value: "0", icon: Fingerprint, color: "text-purple-500" },
             { label: "Status Mesin", value: "Belum Diatur", icon: Wifi, color: "text-gray-500" },
           ]);
@@ -73,7 +73,7 @@ export default function DashboardPage() {
 
         setStats([
           { label: "Total User", value: String(usersCount.count ?? 0), icon: Users, color: "text-[#1976D2]" },
-          { label: "Absensi Hari Ini", value: String(attCount.count ?? 0), icon: Clock, color: "text-emerald-500" },
+          { label: "Absensi Hari Ini", value: String(attCount.count ?? 0), icon: Clock, color: "text-[#1976D2]" },
           { label: "Total PIN", value: String(pinsCount.count ?? 0), icon: Fingerprint, color: "text-purple-500" },
           { label: "Status Mesin", value: ownCloudId ? cloudId : "Belum Diatur", icon: Wifi, color: ownCloudId ? "text-blue-400" : "text-gray-500" },
         ]);
@@ -233,7 +233,7 @@ export default function DashboardPage() {
           </div>
           <span className="text-sm font-medium text-gray-300">Data User</span>
         </Link>
-        <Link href="/absensi" className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-emerald-500/[0.04] group transition-all duration-300">
+        <Link href="/absensi" className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-[#1976D2]/[0.04] group transition-all duration-300">
           <div className="w-14 h-14 rounded-2xl bg-[#1976D2]/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
             <Clock className="w-7 h-7 text-[#1976D2]" />
           </div>
