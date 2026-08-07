@@ -31,7 +31,7 @@ export async function proxy(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  const publicPaths = ["/login", "/register", "/api/webhook", "/auth/callback", "/2fa/setup"];
+  const publicPaths = ["/", "/login", "/register", "/api/webhook", "/auth/callback", "/2fa/setup"];
   const isPublicPath = publicPaths.includes(pathname) || pathname.startsWith("/auth/");
 
   // Not logged in → redirect to login
@@ -44,7 +44,7 @@ export async function proxy(request: NextRequest) {
   // Logged in but on auth pages → redirect to dashboard
   if (user && (pathname === "/login" || pathname === "/register")) {
     const url = request.nextUrl.clone();
-    url.pathname = "/";
+    url.pathname = "/dashboard";
     return NextResponse.redirect(url);
   }
 
@@ -66,10 +66,10 @@ export async function proxy(request: NextRequest) {
         return NextResponse.redirect(url);
       }
 
-      // User already at aal2 but trying to access 2FA verify → redirect home
+      // User already at aal2 but trying to access 2FA verify → redirect dashboard
       if (aal === "aal2" && pathname.startsWith("/2fa/verify")) {
         const url = request.nextUrl.clone();
-        url.pathname = "/";
+        url.pathname = "/dashboard";
         return NextResponse.redirect(url);
       }
     }

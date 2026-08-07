@@ -10,7 +10,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 
 const menus: { label: string; href: string; icon: LucideIcon }[] = [
-  { label: "Dashboard", href: "/", icon: LayoutDashboard },
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Data User", href: "/user", icon: Users },
   { label: "Absensi", href: "/absensi", icon: Clock },
   { label: "Data PIN", href: "/pin", icon: Key },
@@ -41,7 +41,7 @@ export default function Sidebar({ cloudId }: { cloudId?: string }) {
       {/* Nav */}
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-2">
         {menus.map((menu) => {
-          const isActive = menu.href === "/" ? pathname === "/" : pathname.startsWith(menu.href);
+          const isActive = menu.href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(menu.href);
           const Icon = menu.icon;
           return (
             <Link key={menu.href} href={menu.href}

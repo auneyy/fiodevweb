@@ -147,7 +147,7 @@ export default function TwoFactorSetupPage() {
               Autentikasi dua faktor sudah diaktifkan di akun Anda.
             </p>
             <button
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/dashboard")}
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/15 rounded-xl text-sm font-medium text-white transition-colors"
             >
               Masuk ke Dashboard
