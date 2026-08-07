@@ -48,25 +48,25 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Check 2FA: if user has verified TOTP factor but AAL is only aal1
+  // Check 2FA via JWT aal claim
   if (user && !isPublicPath) {
     const { data: factors } = await supabase.auth.mfa.listFactors();
     const hasVerifiedTotp = factors?.totp?.some((f) => f.status === "verified");
 
     if (hasVerifiedTotp) {
-      const { data: aalData } = await supabase.auth.getAuthenticatorAssuranceLevel();
-      const currentLevel = aalData?.currentLevel;
-      const nextLevel = aalData?.nextLevel;
+      // Get AAL from session JWT
+      const { data: { session } } = await supabase.auth.getSession();
+      const aal = session?.aal;
 
-      // User needs to verify 2FA
-      if (currentLevel === "aal1" && nextLevel === "aal2" && pathname !== "/2fa/verify") {
+      // User has MFA but only at aal1 → needs verification
+      if (aal === "aal1" && pathname !== "/2fa/verify") {
         const url = request.nextUrl.clone();
         url.pathname = "/2fa/verify";
         return NextResponse.redirect(url);
       }
 
-      // User already at aal2 but trying to access 2FA pages
-      if (currentLevel === "aal2" && pathname.startsWith("/2fa/verify")) {
+      // User already at aal2 but trying to access 2FA verify → redirect home
+      if (aal === "aal2" && pathname.startsWith("/2fa/verify")) {
         const url = request.nextUrl.clone();
         url.pathname = "/";
         return NextResponse.redirect(url);
