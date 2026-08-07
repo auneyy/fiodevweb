@@ -56,7 +56,8 @@ export async function middleware(request: NextRequest) {
     if (hasVerifiedTotp) {
       // Get AAL from session JWT
       const { data: { session } } = await supabase.auth.getSession();
-      const aal = session?.aal;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const aal = (session as any)?.aal as string | undefined;
 
       // User has MFA but only at aal1 → needs verification
       if (aal === "aal1" && pathname !== "/2fa/verify") {
