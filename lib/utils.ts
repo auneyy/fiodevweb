@@ -25,7 +25,7 @@ export function formatVerifyType(code: number): string {
   if (code === 2) return "Kartu";
   if (code === 3 || code === 4 || code === 15) return "Wajah";
   if (code === 10 || code === 11) return "Vena";
-  return "Tidak Diketahui";
+  return `Tidak Diketahui (${code})`;
 }
 
 export function formatStatusScan(code: number): string {
