@@ -6,7 +6,7 @@ import GlassCard from "../components/GlassCard";
 import { cn, encodePhotoToTemplate } from "@/lib/utils";
 import {
   Users, Search, Plus, RefreshCw, MoreVertical, Trash2, Edit, Eye, UserPlus,
-  Loader2, X, Copy, Check, ChevronRight,
+  Loader2, X, Copy, Check, Fingerprint, ScanFace, Activity,
 } from "lucide-react";
 
 interface User {
@@ -47,15 +47,10 @@ export default function UserPage() {
   const [formPhoto, setFormPhoto] = useState<File | null>(null);
   const [formLoading, setFormLoading] = useState(false);
 
-  const [regPin, setRegPin] = useState("");
   const [regVerification, setRegVerification] = useState(0);
   const [regLoading, setRegLoading] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    loadUsers();
-  }, []);
 
   const loadUsers = async () => {
     setLoading(true);
@@ -75,6 +70,10 @@ export default function UserPage() {
     setUsers(data || []);
     setLoading(false);
   };
+
+  useEffect(() => {
+    void loadUsers();
+  }, []);
 
   const showToast = (message: string, type: "success" | "error") => {
     setToast({ message, type });
@@ -276,7 +275,6 @@ export default function UserPage() {
 
   const openRegisterModal = (user: User) => {
     setSelectedUser(user);
-    setRegPin(user.pin);
     setRegVerification(0);
     setShowRegisterModal(true);
   };
@@ -562,35 +560,65 @@ export default function UserPage() {
 
       {showRegisterModal && selectedUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#1a1a24] border border-white/10 rounded-2xl w-full max-w-md mx-4">
+          <div className="bg-[#1a1a24] border border-white/10 rounded-2xl w-full max-w-lg mx-4">
             <div className="flex items-center justify-between p-5 border-b border-white/10">
               <h3 className="text-lg font-bold text-white">Register Online</h3>
               <button onClick={() => setShowRegisterModal(false)} className="text-gray-400 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-5 space-y-4">
+            <div className="p-5 space-y-5">
               <p className="text-sm text-gray-400">PIN: <span className="font-mono text-white">{selectedUser.pin}</span></p>
+              
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Tipe Verifikasi</label>
-                <select
-                  value={regVerification}
-                  onChange={(e) => setRegVerification(Number(e.target.value))}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#1976D2]/50"
-                >
-                  <option value={0}>Jari (0)</option>
-                  <option value={1}>Jari (1)</option>
-                  <option value={2}>Jari (2)</option>
-                  <option value={3}>Jari (3)</option>
-                  <option value={4}>Jari (4)</option>
-                  <option value={5}>Jari (5)</option>
-                  <option value={6}>Jari (6)</option>
-                  <option value={7}>Jari (7)</option>
-                  <option value={8}>Jari (8)</option>
-                  <option value={9}>Jari (9)</option>
-                  <option value={12}>Wajah</option>
-                  <option value={13}>Vein</option>
-                </select>
+                <label className="block text-sm text-gray-400 mb-3">Sidik Jari</label>
+                <div className="grid grid-cols-5 gap-2">
+                  {[0,1,2,3,4,5,6,7,8,9].map((num) => (
+                    <button
+                      key={num}
+                      onClick={() => setRegVerification(num)}
+                      className={cn(
+                        "flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all duration-200",
+                        regVerification === num
+                          ? "bg-[#1976D2]/15 border-[#1976D2]/50 text-[#1976D2]"
+                          : "bg-white/[0.03] border-white/[0.06] text-gray-400 hover:bg-white/[0.06] hover:text-gray-300"
+                      )}
+                    >
+                      <Fingerprint className="w-5 h-5" />
+                      <span className="text-[11px] font-medium">{num}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-3">Verifikasi Lain</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setRegVerification(12)}
+                    className={cn(
+                      "flex items-center gap-3 p-3 rounded-xl border transition-all duration-200",
+                      regVerification === 12
+                        ? "bg-[#1976D2]/15 border-[#1976D2]/50 text-[#1976D2]"
+                        : "bg-white/[0.03] border-white/[0.06] text-gray-400 hover:bg-white/[0.06] hover:text-gray-300"
+                    )}
+                  >
+                    <ScanFace className="w-5 h-5" />
+                    <span className="text-sm font-medium">Wajah</span>
+                  </button>
+                  <button
+                    onClick={() => setRegVerification(13)}
+                    className={cn(
+                      "flex items-center gap-3 p-3 rounded-xl border transition-all duration-200",
+                      regVerification === 13
+                        ? "bg-[#1976D2]/15 border-[#1976D2]/50 text-[#1976D2]"
+                        : "bg-white/[0.03] border-white/[0.06] text-gray-400 hover:bg-white/[0.06] hover:text-gray-300"
+                    )}
+                  >
+                    <Activity className="w-5 h-5" />
+                    <span className="text-sm font-medium">Vena</span>
+                  </button>
+                </div>
               </div>
             </div>
             <div className="flex justify-end gap-3 p-5 border-t border-white/10">

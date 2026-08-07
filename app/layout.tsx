@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full bg-[#0A0A0F] text-gray-200 font-[family-name:var(--font-inter)]">
+      <body className="min-h-full bg-[#141418] text-gray-200 font-[family-name:var(--font-inter)]">
         <AppShell>{children}</AppShell>
       </body>
     </html>
