@@ -48,7 +48,7 @@ export default function Sidebar({ cloudId }: { cloudId?: string }) {
               title={menu.label}
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-200 whitespace-nowrap overflow-hidden",
-                isActive ? "text-[#1976D2] font-medium bg-[#1976D2]/[0.08]"
+                isActive ? "text-white font-medium bg-white/[0.08]"
                          : "text-gray-500 hover:bg-white/[0.03] hover:text-gray-300"
               )}>
               <Icon className="w-4 h-4 shrink-0" />
@@ -62,7 +62,7 @@ export default function Sidebar({ cloudId }: { cloudId?: string }) {
       {cloudId && (
         <div className="sidebar-cloud hidden mb-4 mx-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.04]">
           <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
             <span className="text-[11px] text-gray-500 truncate">{cloudId}</span>
           </div>
         </div>
@@ -71,7 +71,7 @@ export default function Sidebar({ cloudId }: { cloudId?: string }) {
       {/* Logout */}
       <button
         onClick={handleLogout}
-        className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] text-gray-500 hover:bg-red-500/[0.06] hover:text-red-400 transition-all duration-200 border-t border-white/[0.04] pt-4 mt-2 overflow-hidden whitespace-nowrap w-full"
+        className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] text-gray-500 hover:bg-white/5 hover:text-gray-300 transition-all duration-200 border-t border-white/[0.04] pt-4 mt-2 overflow-hidden whitespace-nowrap w-full"
       >
         <LogOut className="w-4 h-4 shrink-0" />
         <span className="sidebar-label hidden">Logout</span>

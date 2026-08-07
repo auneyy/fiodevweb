@@ -64,7 +64,7 @@ export default function CommandLogsPage() {
       <GlassCard className="p-5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-3">
-            <Terminal className="w-6 h-6 text-[#1976D2]" />
+            <Terminal className="w-6 h-6 text-gray-400" />
             <h2 className="text-xl font-bold text-white">Riwayat Command</h2>
             <span className="text-sm text-gray-400">({logs.length} log)</span>
           </div>
@@ -72,7 +72,7 @@ export default function CommandLogsPage() {
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#1976D2]/50"
+              className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-white/20"
             >
               <option value="">Semua Tipe</option>
               <option value="set_time">set_time</option>
@@ -83,7 +83,7 @@ export default function CommandLogsPage() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#1976D2]/50"
+              className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-white/20"
             >
               <option value="">Semua Status</option>
               <option value="success">Success</option>
@@ -137,7 +137,7 @@ export default function CommandLogsPage() {
                         </td>
                         <td className="px-5 py-4 text-[15px] text-gray-200">{formatDate(log.created_at)}</td>
                         <td className="px-5 py-4">
-                          <span className="px-2.5 py-1 rounded-full text-[13px] font-medium bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">
+                          <span className="px-2.5 py-1 rounded-full text-[13px] font-medium bg-white/10 text-white border border-white/20">
                             {log.command_type}
                           </span>
                         </td>
@@ -145,9 +145,9 @@ export default function CommandLogsPage() {
                         <td className="px-5 py-4">
                           <span className={cn(
                             "px-2.5 py-1 rounded-full text-[13px] font-medium",
-                            log.status === "success" ? "bg-green-500/15 text-green-400 border border-green-500/30"
-                            : log.status === "failed" ? "bg-red-500/15 text-red-400 border border-red-500/30"
-                            : "bg-yellow-500/15 text-yellow-400 border border-yellow-500/30"
+                            log.status === "success" ? "bg-white/10 text-white border border-white/20"
+                            : log.status === "failed" ? "bg-white/5 text-gray-400 border border-white/10"
+                            : "bg-white/5 text-gray-500 border border-white/10"
                           )}>
                             {log.status}
                           </span>

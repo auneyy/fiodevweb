@@ -19,8 +19,8 @@ export default function TutorialPanel({ title, children }: TutorialPanelProps) {
         className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-white/5 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="w-7 h-7 rounded-lg bg-[#1976D2]/10 flex items-center justify-center">
-            <HelpCircle className="w-4 h-4 text-[#1976D2]" />
+          <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center">
+            <HelpCircle className="w-4 h-4 text-gray-400" />
           </div>
           <span className="text-sm font-medium text-gray-200">{title}</span>
         </div>

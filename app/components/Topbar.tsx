@@ -26,10 +26,10 @@ export default function Topbar({ title }: TopbarProps) {
         <p className="text-xs text-gray-500">{dateStr}</p>
       </div>
       <div className="flex items-center gap-4 pointer-events-auto">
-        <button className="text-gray-500 hover:text-[#1976D2] transition-colors duration-300">
+        <button className="text-gray-500 hover:text-gray-400 transition-colors duration-300">
           <Bell className="w-4 h-4" />
         </button>
-        <div className="w-7 h-7 rounded-full bg-[#1976D2]/15 flex items-center justify-center text-[11px] font-semibold text-[#1976D2]">
+        <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-[11px] font-semibold text-gray-400">
           A
         </div>
       </div>

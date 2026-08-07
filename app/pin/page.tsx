@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { getClientCloudId } from "@/lib/user-settings-client";
 import GlassCard from "../components/GlassCard";
 import { formatDate } from "@/lib/utils";
+import Toast from "../components/Toast";
 import { Key, Search, Loader2, Fingerprint, RefreshCw } from "lucide-react";
 
 interface DevicePin {
@@ -104,22 +105,14 @@ export default function PinPage() {
 
   return (
     <div className="space-y-4">
-      {toast && (
-        <div className={`fixed top-20 right-6 z-50 px-4 py-3 rounded-xl text-sm font-medium backdrop-blur-xl border max-w-sm ${
-          toast.type === "success"
-            ? "bg-green-500/15 text-green-400 border-green-500/30"
-            : "bg-red-500/15 text-red-400 border-red-500/30"
-        }`}>
-          {toast.message}
-        </div>
-      )}
+      {toast && <Toast message={toast.message} type={toast.type} />}
 
-      <GlassCard className="p-5 border-l-4 border-l-yellow-500/50">
+      <GlassCard className="p-5 border-l-4 border-l-white/20">
         <div className="flex items-start gap-3">
-          <Fingerprint className="w-5 h-5 text-yellow-400 mt-0.5 shrink-0" />
+          <Fingerprint className="w-5 h-5 text-gray-400 mt-0.5 shrink-0" />
           <div>
-            <p className="text-sm text-yellow-200 font-medium">Halaman ini hanya menampilkan PIN saja</p>
-            <p className="text-xs text-yellow-200/60 mt-1">
+            <p className="text-sm text-gray-200 font-medium">Halaman ini hanya menampilkan PIN saja</p>
+            <p className="text-xs text-gray-400 mt-1">
               Data user lengkap (nama, privilege, dll) ada di halaman <a href="/user" className="underline">Data User</a>.
               Gunakan tombol &quot;Sinkronisasi&quot; di halaman User untuk mengambil data lengkap.
             </p>
@@ -130,7 +123,7 @@ export default function PinPage() {
       <GlassCard className="p-5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-3">
-            <Key className="w-6 h-6 text-[#1976D2]" />
+            <Key className="w-6 h-6 text-gray-400" />
             <h2 className="text-xl font-bold text-white">Data PIN</h2>
             <span className="text-sm text-gray-400">({pins.length} PIN)</span>
           </div>
@@ -142,13 +135,13 @@ export default function PinPage() {
                 placeholder="Cari PIN..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50"
+                className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20"
               />
             </div>
             <button
               onClick={handleFetchPins}
               disabled={fetching}
-              className="flex items-center gap-2 px-4 py-2 bg-[#1976D2] hover:bg-[#1565C0] disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
             >
               {fetching ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
               {fetching ? "Mengirim..." : "Ambil Semua PIN"}
@@ -158,19 +151,19 @@ export default function PinPage() {
       </GlassCard>
 
       {pins.length === 0 && !loading && (
-        <GlassCard className="p-6 border-l-4 border-l-red-500/50">
+        <GlassCard className="p-6 border-l-4 border-l-white/20">
           <div className="flex items-start gap-3">
-            <div className="text-red-400 mt-0.5">
+            <div className="text-gray-400 mt-0.5">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
             </div>
             <div>
-              <p className="text-sm text-red-200 font-medium">Tidak ada data PIN di database</p>
-              <p className="text-xs text-red-200/60 mt-1">
+              <p className="text-sm text-gray-200 font-medium">Tidak ada data PIN di database</p>
+              <p className="text-xs text-gray-400 mt-1">
                 Klik &quot;Ambil Semua PIN&quot; untuk mengirim perintah ke mesin. Data PIN akan muncul setelah mesin merespons via webhook.
               </p>
-              <p className="text-xs text-red-200/60 mt-2">
+              <p className="text-xs text-gray-400 mt-2">
                 <strong>Pastikan webhook URL sudah dikonfigurasi</strong> di panel Fingerspot ke:
                 <code className="ml-1 px-1.5 py-0.5 bg-white/10 rounded text-[10px]">
                   {typeof window !== "undefined" ? window.location.origin : "..."}/api/webhook

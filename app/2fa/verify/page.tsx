@@ -94,7 +94,7 @@ export default function TwoFactorVerifyPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#141418] flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-[#1976D2] animate-spin" />
+        <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
       </div>
     );
   }
@@ -103,12 +103,12 @@ export default function TwoFactorVerifyPage() {
     return (
       <div className="min-h-screen bg-[#141418] flex items-center justify-center relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-yellow-500/5 rounded-full blur-3xl" />
+          <div className="absolute top-20 left-20 w-72 h-72 bg-white/5 rounded-full blur-3xl" />
         </div>
         <div className="relative z-10 w-full max-w-md mx-4">
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-yellow-500/10 flex items-center justify-center mx-auto mb-4">
-              <Shield className="w-7 h-7 text-yellow-400" />
+            <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mx-auto mb-4">
+              <Shield className="w-7 h-7 text-white" />
             </div>
             <h1 className="text-xl font-bold text-white mb-2">2FA Belum Dikonfigurasi</h1>
             <p className="text-sm text-gray-400 mb-6">
@@ -116,7 +116,7 @@ export default function TwoFactorVerifyPage() {
             </p>
             <button
               onClick={() => router.push("/2fa/setup")}
-              className="w-full px-4 py-2.5 bg-[#1976D2] hover:bg-[#1565C0] rounded-xl text-sm font-medium text-white transition-colors mb-3"
+              className="w-full px-4 py-2.5 bg-white/10 hover:bg-white/15 rounded-xl text-sm font-medium text-white transition-colors mb-3"
             >
               Setup 2FA
             </button>
@@ -136,15 +136,15 @@ export default function TwoFactorVerifyPage() {
   return (
     <div className="min-h-screen bg-[#141418] flex items-center justify-center relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-[#1976D2]/5 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-20 w-72 h-72 bg-white/10/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10 w-full max-w-md mx-4">
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
           <div className="flex flex-col items-center mb-6">
-            <div className="w-14 h-14 rounded-2xl bg-[#1976D2]/10 flex items-center justify-center mb-4">
-              <Shield className="w-7 h-7 text-[#1976D2]" />
+            <div className="w-14 h-14 rounded-2xl bg-white/10/10 flex items-center justify-center mb-4">
+              <Shield className="w-7 h-7 text-gray-400" />
             </div>
             <h1 className="text-xl font-bold text-white">Verifikasi 2FA</h1>
             <p className="text-sm text-gray-400 text-center mt-1">
@@ -164,20 +164,20 @@ export default function TwoFactorVerifyPage() {
                 onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
                 onKeyDown={(e) => e.key === "Enter" && handleVerify()}
                 className={cn(
-                  "w-full px-4 py-3 bg-white/5 border rounded-xl text-sm text-white text-center font-mono text-2xl tracking-[0.5em] placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50",
+                  "w-full px-4 py-3 bg-white/5 border rounded-xl text-sm text-white text-center font-mono text-2xl tracking-[0.5em] placeholder:text-gray-500 focus:outline-none focus:border-white/20",
                   error ? "border-red-500/50" : "border-white/10"
                 )}
                 placeholder="000000"
               />
               {error && (
-                <p className="text-xs text-red-400 mt-1">{error}</p>
+                <p className="text-xs text-gray-400 mt-1">{error}</p>
               )}
             </div>
 
             <button
               onClick={handleVerify}
               disabled={verifying || code.length !== 6}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#1976D2] hover:bg-[#1565C0] disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/15 disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
             >
               {verifying ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
               Verifikasi

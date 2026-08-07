@@ -13,12 +13,12 @@ function syntaxHighlight(json: string): string {
     .replace(
       /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,
       (match) => {
-        let cls = "text-orange-400";
+        let cls = "text-white";
         if (/^"/.test(match)) {
           if (/:$/.test(match)) {
-            cls = "text-[#1976D2]";
+            cls = "text-gray-400";
           } else {
-            cls = "text-emerald-400";
+            cls = "text-gray-400";
           }
         } else if (/true|false/.test(match)) {
           cls = "text-purple-400";
@@ -49,9 +49,9 @@ export default function JsonViewer({
     <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden">
       <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
         <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
-          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
-          <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
+          <div className="w-2.5 h-2.5 rounded-full bg-white/40" />
+          <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
+          <div className="w-2.5 h-2.5 rounded-full bg-white/30" />
         </div>
         <button
           onClick={handleCopy}

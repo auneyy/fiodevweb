@@ -59,14 +59,14 @@ export default function WebhookLogsPage() {
       <GlassCard className="p-5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-3">
-            <Webhook className="w-6 h-6 text-[#1976D2]" />
+            <Webhook className="w-6 h-6 text-gray-400" />
             <h2 className="text-xl font-bold text-white">Riwayat Webhook</h2>
             <span className="text-sm text-gray-400">({logs.length} log)</span>
           </div>
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#1976D2]/50"
+            className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-white/20"
           >
             <option value="">Semua Tipe</option>
             <option value="attlog">attlog</option>
@@ -125,7 +125,7 @@ export default function WebhookLogsPage() {
                       <td className="px-5 py-4 text-right">
                         <Link
                           href={`/webhook-logs/${log.id}`}
-                          className="inline-flex items-center gap-1 text-[15px] text-[#1976D2] hover:text-[#1565C0]"
+                          className="inline-flex items-center gap-1 text-[15px] text-gray-400 hover:text-white"
                         >
                           Lihat <ChevronRight className="w-4 h-4" />
                         </Link>

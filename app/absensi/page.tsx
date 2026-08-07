@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getClientCloudId } from "@/lib/user-settings-client";
 import GlassCard from "../components/GlassCard";
+import Toast from "../components/Toast";
 import { formatDate, formatVerifyType, formatStatusScan } from "@/lib/utils";
 import { Clock, Search, Download, Loader2 } from "lucide-react";
 
@@ -134,20 +135,12 @@ export default function AbsensiPage() {
 
   return (
     <div className="space-y-4">
-      {toast && (
-        <div className={`fixed top-20 right-6 z-50 px-4 py-3 rounded-xl text-sm font-medium backdrop-blur-xl border ${
-          toast.type === "success"
-            ? "bg-green-500/15 text-green-400 border-green-500/30"
-            : "bg-red-500/15 text-red-400 border-red-500/30"
-        }`}>
-          {toast.message}
-        </div>
-      )}
+      {toast && <Toast message={toast.message} type={toast.type} />}
 
       <GlassCard className="p-5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-3">
-            <Clock className="w-6 h-6 text-[#1976D2]" />
+            <Clock className="w-6 h-6 text-gray-400" />
             <h2 className="text-xl font-bold text-white">Data Absensi</h2>
             <span className="text-sm text-gray-400">({logs.length} record)</span>
           </div>
@@ -156,14 +149,14 @@ export default function AbsensiPage() {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#1976D2]/50"
+              className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-white/20"
             />
             <span className="text-gray-500">-</span>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#1976D2]/50"
+              className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-white/20"
             />
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -172,13 +165,13 @@ export default function AbsensiPage() {
                 placeholder="Filter PIN..."
                 value={filterPin}
                 onChange={(e) => setFilterPin(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50 w-32"
+                className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20 w-32"
               />
             </div>
             <button
               onClick={handleFetch}
               disabled={fetching}
-              className="flex items-center gap-2 px-4 py-2 bg-[#1976D2] hover:bg-[#1565C0] disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
             >
               {fetching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
               {fetching ? "Mengirim..." : "Ambil Data"}
@@ -231,26 +224,26 @@ export default function AbsensiPage() {
                       <td className="px-5 py-4 text-[15px] text-gray-200">{formatDate(row.scan_time)}</td>
                       <td className="px-5 py-4">
                         <span className={`px-2.5 py-1 rounded-full text-[13px] font-medium ${
-                          row.verify >= 0 && row.verify <= 9 ? "bg-blue-500/15 text-blue-400 border border-blue-500/30"
-                          : row.verify === 15 ? "bg-green-500/15 text-green-400 border border-green-500/30"
-                          : row.verify === 2 ? "bg-purple-500/15 text-purple-400 border border-purple-500/30"
-                          : "bg-gray-500/15 text-gray-400 border border-gray-500/30"
+                          row.verify >= 0 && row.verify <= 9 ? "bg-white/10 text-white border border-white/20"
+                          : row.verify === 15 ? "bg-white/10 text-white border border-white/20"
+                          : row.verify === 2 ? "bg-white/5 text-gray-400 border border-white/10"
+                          : "bg-white/5 text-gray-500 border border-white/10"
                         }`}>
                           {formatVerifyType(row.verify)}
                         </span>
                       </td>
                       <td className="px-5 py-4 text-center">
                         <span className={`px-2.5 py-1 rounded-full text-[13px] font-medium ${
-                          row.status_scan === 0 ? "bg-green-500/15 text-green-400 border border-green-500/30"
-                          : row.status_scan === 1 ? "bg-red-500/15 text-red-400 border border-red-500/30"
-                          : "bg-gray-500/15 text-gray-400 border border-gray-500/30"
+                          row.status_scan === 0 ? "bg-white/10 text-white border border-white/20"
+                          : row.status_scan === 1 ? "bg-white/5 text-gray-400 border border-white/10"
+                          : "bg-white/5 text-gray-500 border border-white/10"
                         }`}>
                           {formatStatusScan(row.status_scan)}
                         </span>
                       </td>
                       <td className="px-5 py-4 text-[15px] text-gray-200">
                         {row.photo_url ? (
-                          <a href={row.photo_url} target="_blank" rel="noopener noreferrer" className="text-[#1976D2] hover:underline">
+                          <a href={row.photo_url} target="_blank" rel="noopener noreferrer" className="text-white hover:underline">
                             Lihat
                           </a>
                         ) : "-"}

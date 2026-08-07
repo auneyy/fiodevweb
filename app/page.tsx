@@ -33,10 +33,10 @@ interface DayData {
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<StatCard[]>([
-    { label: "Total User", value: "-", icon: Users, color: "text-[#1976D2]" },
-    { label: "Absensi Hari Ini", value: "-", icon: Clock, color: "text-[#1976D2]" },
-    { label: "Total PIN", value: "-", icon: Fingerprint, color: "text-purple-500" },
-    { label: "Status Mesin", value: "-", icon: Wifi, color: "text-blue-400" },
+    { label: "Total User", value: "-", icon: Users, color: "text-gray-400" },
+    { label: "Absensi Hari Ini", value: "-", icon: Clock, color: "text-gray-400" },
+    { label: "Total PIN", value: "-", icon: Fingerprint, color: "text-gray-400" },
+    { label: "Status Mesin", value: "-", icon: Wifi, color: "text-gray-400" },
   ]);
   const [recent, setRecent] = useState<RecentAttendance[]>([]);
   const [chartData, setChartData] = useState<DayData[]>([]);
@@ -52,8 +52,8 @@ export default function DashboardPage() {
 
         if (!cloudId) {
           setStats([
-            { label: "Total User", value: "0", icon: Users, color: "text-[#1976D2]" },
-            { label: "Absensi Hari Ini", value: "0", icon: Clock, color: "text-[#1976D2]" },
+            { label: "Total User", value: "0", icon: Users, color: "text-gray-400" },
+            { label: "Absensi Hari Ini", value: "0", icon: Clock, color: "text-gray-400" },
             { label: "Total PIN", value: "0", icon: Fingerprint, color: "text-purple-500" },
             { label: "Status Mesin", value: "Belum Diatur", icon: Wifi, color: "text-gray-500" },
           ]);
@@ -71,8 +71,8 @@ export default function DashboardPage() {
         ]);
 
         setStats([
-          { label: "Total User", value: String(usersCount.count ?? 0), icon: Users, color: "text-[#1976D2]" },
-          { label: "Absensi Hari Ini", value: String(attCount.count ?? 0), icon: Clock, color: "text-[#1976D2]" },
+          { label: "Total User", value: String(usersCount.count ?? 0), icon: Users, color: "text-gray-400" },
+          { label: "Absensi Hari Ini", value: String(attCount.count ?? 0), icon: Clock, color: "text-gray-400" },
           { label: "Total PIN", value: String(pinsCount.count ?? 0), icon: Fingerprint, color: "text-purple-500" },
           { label: "Status Mesin", value: cloudId, icon: Wifi, color: "text-blue-400" },
         ]);
@@ -177,9 +177,9 @@ export default function DashboardPage() {
                   <Icon className="w-5 h-5" />
                 </div>
                 {card.label === "Status Mesin" && (
-                  <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full ${hasConfig ? "bg-green-500/10" : "bg-gray-500/10"}`}>
-                    <div className={`w-1.5 h-1.5 rounded-full ${hasConfig ? "bg-green-500 animate-pulse" : "bg-gray-500"}`} />
-                    <span className={`text-[10px] font-medium uppercase ${hasConfig ? "text-green-400" : "text-gray-500"}`}>
+                  <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full ${hasConfig ? "bg-white/10" : "bg-gray-500/10"}`}>
+                    <div className={`w-1.5 h-1.5 rounded-full ${hasConfig ? "bg-white animate-pulse" : "bg-gray-500"}`} />
+                    <span className={`text-[10px] font-medium uppercase ${hasConfig ? "text-white" : "text-gray-500"}`}>
                       {hasConfig ? "Online" : "Offline"}
                     </span>
                   </div>
@@ -211,12 +211,12 @@ export default function DashboardPage() {
                 <div className="w-full relative" style={{ height: "100px" }}>
                   <div
                     className={`absolute bottom-0 w-full rounded-t-md transition-all duration-500 ease-out ${
-                      isToday ? "bg-[#1976D2]" : "bg-[#1976D2]/30"
+                      isToday ? "bg-white/10" : "bg-white/10/30"
                     }`}
                     style={{ height: `${Math.max(height, 2)}%` }}
                   />
                 </div>
-                <span className={`text-[11px] ${isToday ? "text-[#1976D2] font-medium" : "text-gray-500"}`}>
+                <span className={`text-[11px] ${isToday ? "text-gray-400 font-medium" : "text-gray-500"}`}>
                   {day.label}
                 </span>
               </div>
@@ -226,21 +226,21 @@ export default function DashboardPage() {
       </GlassCard>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Link href="/user" className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-[#1976D2]/[0.04] group transition-all duration-300">
-          <div className="w-14 h-14 rounded-2xl bg-[#1976D2]/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-            <Users className="w-7 h-7 text-[#1976D2]" />
+        <Link href="/user" className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-white/10/[0.04] group transition-all duration-300">
+          <div className="w-14 h-14 rounded-2xl bg-white/10/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <Users className="w-7 h-7 text-gray-400" />
           </div>
           <span className="text-sm font-medium text-gray-300">Data User</span>
         </Link>
-        <Link href="/absensi" className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-[#1976D2]/[0.04] group transition-all duration-300">
-          <div className="w-14 h-14 rounded-2xl bg-[#1976D2]/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-            <Clock className="w-7 h-7 text-[#1976D2]" />
+        <Link href="/absensi" className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-white/10/[0.04] group transition-all duration-300">
+          <div className="w-14 h-14 rounded-2xl bg-white/10/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <Clock className="w-7 h-7 text-gray-400" />
           </div>
           <span className="text-sm font-medium text-gray-300">Data Absensi</span>
         </Link>
-        <Link href="/pengaturan" className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-red-500/[0.04] group transition-all duration-300">
-          <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-            <Wifi className="w-7 h-7 text-red-500" />
+        <Link href="/pengaturan" className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-white/[0.04] group transition-all duration-300">
+          <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <Wifi className="w-7 h-7 text-gray-400" />
           </div>
           <span className="text-sm font-medium text-gray-300">Pengaturan</span>
         </Link>
@@ -249,10 +249,10 @@ export default function DashboardPage() {
       <GlassCard className="overflow-hidden">
         <div className="p-5 border-b border-white/[0.06] flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <Clock className="w-4 h-4 text-[#1976D2]" />
+            <Clock className="w-4 h-4 text-gray-400" />
             <h3 className="text-sm font-semibold text-gray-300">Absensi Terbaru</h3>
           </div>
-          <Link className="text-[#1976D2] hover:text-[#1565C0] text-[13px] font-medium flex items-center gap-1 transition-colors" href="/absensi">
+          <Link className="text-white hover:text-gray-300 text-[13px] font-medium flex items-center gap-1 transition-colors" href="/absensi">
             Lihat Semua <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -283,12 +283,12 @@ export default function DashboardPage() {
                     <td className="px-5 py-4 text-[15px] text-gray-300">{row.name}</td>
                     <td className="px-5 py-4 text-[15px] text-gray-400">{formatDate(row.scan_time)}</td>
                     <td className="px-5 py-4">
-                      <span className="px-2.5 py-1 rounded-full text-[13px] font-medium bg-[#1976D2]/10 text-[#1976D2]">
+                      <span className="px-2.5 py-1 rounded-full text-[13px] font-medium bg-white/10 text-white">
                         {formatVerifyType(row.verify)}
                       </span>
                     </td>
                     <td className="px-5 py-4 text-center">
-                      <span className={`px-2.5 py-1 rounded-full text-[13px] font-medium ${row.status_scan === 0 ? "bg-emerald-500/10 text-emerald-400" : row.status_scan === 1 ? "bg-red-500/10 text-red-400" : "bg-gray-500/10 text-gray-400"}`}>
+                      <span className={`px-2.5 py-1 rounded-full text-[13px] font-medium ${row.status_scan === 0 ? "bg-white/10 text-white" : row.status_scan === 1 ? "bg-white/5 text-gray-400" : "bg-white/5 text-gray-500"}`}>
                         {formatStatusScan(row.status_scan)}
                       </span>
                     </td>

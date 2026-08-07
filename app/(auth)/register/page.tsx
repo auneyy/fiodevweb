@@ -56,19 +56,19 @@ export default function RegisterPage() {
     return (
       <div className="min-h-screen bg-[#141418] flex items-center justify-center relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-green-500/5 rounded-full blur-3xl" />
+          <div className="absolute top-20 left-20 w-72 h-72 bg-white/5 rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
         </div>
         <div className="relative z-10 w-full max-w-md mx-4">
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-center">
-            <CheckCircle className="w-10 h-10 text-green-400 mx-auto mb-4" />
+            <CheckCircle className="w-10 h-10 text-white mx-auto mb-4" />
             <h2 className="text-xl font-bold text-white mb-2">Registrasi Berhasil!</h2>
             <p className="text-sm text-gray-400 mb-6">
               Akun Anda telah dibuat. Silakan cek email untuk verifikasi, lalu login.
             </p>
             <Link
               href="/login"
-              className="inline-flex items-center justify-center px-6 py-3 bg-[#1976D2] hover:bg-[#1565C0] rounded-xl text-sm font-medium text-white transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 bg-white/10 hover:bg-white/15 rounded-xl text-sm font-medium text-white transition-colors"
             >
               Login Sekarang
             </Link>
@@ -81,7 +81,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-[#141418] flex items-center justify-center relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-[#1976D2]/5 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-20 w-72 h-72 bg-white/10/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
       </div>
 
@@ -100,7 +100,7 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20"
                 placeholder="Masukkan nama"
               />
             </div>
@@ -111,7 +111,7 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20"
                 placeholder="Masukkan email"
               />
             </div>
@@ -122,7 +122,7 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20"
                 placeholder="Masukkan password (min 6 karakter)"
               />
             </div>
@@ -133,13 +133,13 @@ export default function RegisterPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20"
                 placeholder="Ulangi password"
               />
             </div>
 
             {error && (
-              <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-2">
+              <p className="text-sm text-gray-400 bg-white/5 border border-white/10 rounded-lg px-4 py-2">
                 {error}
               </p>
             )}
@@ -147,7 +147,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#1976D2] hover:bg-[#1565C0] disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/15 disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               Register
@@ -156,7 +156,7 @@ export default function RegisterPage() {
 
           <p className="text-center text-sm text-gray-400 mt-6">
             Sudah punya akun?{" "}
-            <Link href="/login" className="text-[#1976D2] hover:text-[#1565C0]">
+            <Link href="/login" className="text-gray-400 hover:text-white">
               Login
             </Link>
           </p>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import GlassCard from "../components/GlassCard";
+import Toast from "../components/Toast";
 import {
   Settings, Save, Loader2, Copy, Check, RefreshCw, AlertTriangle, Clock, Shield,
 } from "lucide-react";
@@ -165,22 +166,14 @@ export default function PengaturanPage() {
 
   return (
     <div className="space-y-4">
-      {toast && (
-        <div className={`fixed top-20 right-6 z-50 px-4 py-3 rounded-xl text-sm font-medium backdrop-blur-xl border ${
-          toast.type === "success"
-            ? "bg-green-500/15 text-green-400 border-green-500/30"
-            : "bg-red-500/15 text-red-400 border-red-500/30"
-        }`}>
-          {toast.message}
-        </div>
-      )}
+      {toast && <Toast message={toast.message} type={toast.type} />}
 
       {!isConfigComplete && (
-        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-yellow-400 mt-0.5 shrink-0" />
+        <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-gray-400 mt-0.5 shrink-0" />
           <div>
-            <p className="text-sm font-medium text-yellow-200">Konfigurasi belum lengkap</p>
-            <p className="text-xs text-yellow-200/60 mt-1">
+            <p className="text-sm font-medium text-gray-200">Konfigurasi belum lengkap</p>
+            <p className="text-xs text-gray-400 mt-1">
               Cloud ID dan API Token harus diisi agar dapat berkomunikasi dengan mesin Fingerspot.
             </p>
           </div>
@@ -191,7 +184,7 @@ export default function PengaturanPage() {
         <div className="lg:col-span-2 space-y-4">
           <GlassCard className="p-5">
             <div className="flex items-center gap-3 mb-5">
-              <Settings className="w-5 h-5 text-[#1976D2]" />
+              <Settings className="w-5 h-5 text-gray-400" />
               <h3 className="text-lg font-bold text-white">Konfigurasi Perangkat</h3>
             </div>
             {loading ? (
@@ -207,7 +200,7 @@ export default function PengaturanPage() {
                     type="text"
                     value={cloudId}
                     onChange={(e) => setCloudId(e.target.value)}
-                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50"
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20"
                     placeholder="Masukkan Cloud ID"
                   />
                 </div>
@@ -218,7 +211,7 @@ export default function PengaturanPage() {
                       type={showApiKey ? "text" : "password"}
                       value={apiKey}
                       onChange={(e) => setApiKey(e.target.value)}
-                      className="w-full px-4 py-2 pr-16 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50"
+                      className="w-full px-4 py-2 pr-16 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20"
                       placeholder="Masukkan API Token"
                     />
                     <button
@@ -232,7 +225,7 @@ export default function PengaturanPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#1976D2] hover:bg-[#1565C0] disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
                 >
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                   Simpan Konfigurasi
@@ -243,7 +236,7 @@ export default function PengaturanPage() {
 
           <GlassCard className="p-5">
             <div className="flex items-center gap-3 mb-5">
-              <Clock className="w-5 h-5 text-[#1976D2]" />
+              <Clock className="w-5 h-5 text-gray-400" />
               <h3 className="text-lg font-bold text-white">Kontrol Mesin</h3>
             </div>
             <div className="space-y-4">
@@ -263,7 +256,7 @@ export default function PengaturanPage() {
                       onClick={() => setTimezone(opt.value)}
                       className={`px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                         timezone === opt.value
-                          ? "bg-[#1976D2] text-white shadow-lg shadow-[#1976D2]/20"
+                          ? "bg-white/10 text-white shadow-lg shadow-white/5"
                           : "bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white"
                       }`}
                     >
@@ -277,7 +270,7 @@ export default function PengaturanPage() {
               </div>
               <button
                 onClick={handleSetTime}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 rounded-xl text-sm font-medium text-white transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 rounded-xl text-sm font-medium text-white transition-colors"
               >
                 <Clock className="w-4 h-4" />
                 Set Waktu dan Sinkronisasi
@@ -288,7 +281,7 @@ export default function PengaturanPage() {
                 <button
                   onClick={() => setShowRestartDialog(true)}
                   disabled={restarting}
-                  className="flex items-center gap-2 px-4 py-2 bg-red-600/10 hover:bg-red-600/20 border border-red-500/30 disabled:opacity-50 rounded-xl text-sm font-medium text-red-400 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 disabled:opacity-50 rounded-xl text-sm font-medium text-gray-300 transition-colors"
                 >
                   {restarting ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                   {restarting ? "Restarting..." : "Restart Mesin"}
@@ -310,7 +303,7 @@ export default function PengaturanPage() {
                 onClick={copyWebhookUrl}
                 className="shrink-0 p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-400 hover:text-white transition-colors"
               >
-                {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+                {copied ? <Check className="w-4 h-4 text-white" /> : <Copy className="w-4 h-4" />}
               </button>
             </div>
           </GlassCard>
@@ -325,7 +318,7 @@ export default function PengaturanPage() {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-400">Status</span>
                 <div className="flex items-center gap-1.5">
-                  <div className={`w-2 h-2 rounded-full ${isConfigComplete ? "bg-green-500 animate-pulse" : "bg-yellow-500"}`} />
+                  <div className={`w-2 h-2 rounded-full ${isConfigComplete ? "bg-white animate-pulse" : "bg-gray-500"}`} />
                   <span className="text-sm text-white">{isConfigComplete ? "Terhubung" : "Belum Dikonfigurasi"}</span>
                 </div>
               </div>
@@ -335,10 +328,10 @@ export default function PengaturanPage() {
           <GlassCard className="p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5 text-[#1976D2]" />
+                <Shield className="w-5 h-5 text-gray-400" />
                 <h3 className="text-lg font-bold text-white">2FA</h3>
               </div>
-              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${twoFaEnabled ? "bg-green-500/10 text-green-400" : "bg-gray-500/10 text-gray-400"}`}>
+              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${twoFaEnabled ? "bg-white/10 text-white" : "bg-white/5 text-gray-500"}`}>
                 {twoFaEnabled ? "Aktif" : "Nonaktif"}
               </span>
             </div>
@@ -352,7 +345,7 @@ export default function PengaturanPage() {
               className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                 twoFaEnabled
                   ? "bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10"
-                  : "bg-[#1976D2] hover:bg-[#1565C0] text-white"
+                  : "bg-white/10 hover:bg-white/15 text-white"
               }`}
             >
               <Shield className="w-4 h-4" />
@@ -366,8 +359,8 @@ export default function PengaturanPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="bg-[#1a1a24] border border-white/10 rounded-2xl w-full max-w-md mx-4 p-6">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-red-400" />
+              <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-gray-400" />
               </div>
               <h3 className="text-lg font-bold text-white">Restart Mesin</h3>
             </div>
@@ -383,7 +376,7 @@ export default function PengaturanPage() {
               </button>
               <button
                 onClick={handleRestart}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-xl text-sm font-medium text-white transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 rounded-xl text-sm font-medium text-white transition-colors"
               >
                 <RefreshCw className="w-4 h-4" />
                 Restart

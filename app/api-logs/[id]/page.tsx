@@ -62,13 +62,13 @@ export default function ApiLogDetailPage() {
 
   return (
     <div className="space-y-4">
-      <Link href="/api-logs" className="inline-flex items-center gap-2 text-sm text-[#1976D2] hover:text-[#1565C0]">
+      <Link href="/api-logs" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white">
         <ArrowLeft className="w-4 h-4" /> Kembali ke Riwayat API
       </Link>
 
       <GlassCard className="p-5">
         <div className="flex items-center gap-3">
-          <History className="w-6 h-6 text-[#1976D2]" />
+          <History className="w-6 h-6 text-gray-400" />
           <h2 className="text-xl font-bold text-white">Detail API Log</h2>
         </div>
         <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">

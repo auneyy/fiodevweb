@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getClientCloudId } from "@/lib/user-settings-client";
 import GlassCard from "../components/GlassCard";
+import Toast from "../components/Toast";
 import { cn, encodePhotoToTemplate } from "@/lib/utils";
 import {
   Users, Search, Plus, RefreshCw, MoreVertical, Trash2, Edit, Eye, UserPlus,
@@ -301,21 +302,12 @@ export default function UserPage() {
 
   return (
     <div className="space-y-4">
-      {toast && (
-        <div className={cn(
-          "fixed top-20 right-6 z-50 px-4 py-3 rounded-xl text-sm font-medium backdrop-blur-xl border",
-          toast.type === "success"
-            ? "bg-green-500/15 text-green-400 border-green-500/30"
-            : "bg-red-500/15 text-red-400 border-red-500/30"
-        )}>
-          {toast.message}
-        </div>
-      )}
+      {toast && <Toast message={toast.message} type={toast.type} />}
 
       <GlassCard className="p-5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-3">
-            <Users className="w-6 h-6 text-[#1976D2]" />
+            <Users className="w-6 h-6 text-gray-400" />
             <h2 className="text-xl font-bold text-white">Data User</h2>
             <span className="text-sm text-gray-400">({users.length} user)</span>
           </div>
@@ -327,20 +319,20 @@ export default function UserPage() {
                 placeholder="Cari PIN atau nama..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50"
+                className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20"
               />
             </div>
             <button
               onClick={handleSync}
               disabled={syncing}
-              className="flex items-center gap-2 px-4 py-2 bg-[#1976D2] hover:bg-[#1565C0] disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
             >
               {syncing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
               {syncing ? "Mengirim..." : "Sinkronisasi"}
             </button>
             <button
               onClick={() => { resetForm(); setShowAddModal(true); }}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 rounded-xl text-sm font-medium text-white transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 rounded-xl text-sm font-medium text-white transition-colors"
             >
               <Plus className="w-4 h-4" />
               Tambah
@@ -388,8 +380,8 @@ export default function UserPage() {
                         <span className={cn(
                           "px-2.5 py-1 rounded-full text-[13px] font-medium",
                           user.privilege === 14
-                            ? "bg-orange-500/10 text-orange-400"
-                            : "bg-[#1976D2]/10 text-[#1976D2]"
+                            ? "bg-white/10 text-white"
+                            : "bg-white/5 text-gray-400"
                         )}>
                           {user.privilege === 14 ? "Admin" : "User"}
                         </span>
@@ -413,7 +405,7 @@ export default function UserPage() {
                               <button onClick={() => { openRegisterModal(user); }} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-200 hover:bg-white/5">
                                 <UserPlus className="w-4 h-4" /> Register Online
                               </button>
-                              <button onClick={() => openDeleteDialog(user)} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-400 hover:bg-white/5 rounded-b-xl">
+                              <button onClick={() => openDeleteDialog(user)} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-400 hover:bg-white/5 rounded-b-xl">
                                 <Trash2 className="w-4 h-4" /> Hapus
                               </button>
                             </div>
@@ -446,7 +438,7 @@ export default function UserPage() {
                   value={formPin}
                   onChange={(e) => setFormPin(e.target.value)}
                   disabled={showEditModal}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50 disabled:opacity-50"
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20 disabled:opacity-50"
                   placeholder="Masukkan PIN (angka)"
                 />
               </div>
@@ -456,7 +448,7 @@ export default function UserPage() {
                   type="text"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50"
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20"
                   placeholder="Masukkan nama"
                 />
               </div>
@@ -466,7 +458,7 @@ export default function UserPage() {
                   type="text"
                   value={formPassword}
                   onChange={(e) => setFormPassword(e.target.value)}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50"
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20"
                   placeholder="Masukkan password"
                 />
               </div>
@@ -475,7 +467,7 @@ export default function UserPage() {
                 <select
                   value={formPrivilege}
                   onChange={(e) => setFormPrivilege(Number(e.target.value))}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#1976D2]/50"
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-white/20"
                 >
                   <option value={0}>User Biasa</option>
                   <option value={14}>Admin</option>
@@ -487,7 +479,7 @@ export default function UserPage() {
                   type="text"
                   value={formRfid}
                   onChange={(e) => setFormRfid(e.target.value)}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50"
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20"
                   placeholder="Masukkan nomor RFID"
                 />
               </div>
@@ -498,7 +490,7 @@ export default function UserPage() {
                   type="file"
                   accept="image/*"
                   onChange={(e) => setFormPhoto(e.target.files?.[0] || null)}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-[#1976D2]/20 file:text-[#1976D2] file:text-sm"
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-white/10 file:text-sm"
                 />
               </div>
               <div>
@@ -507,7 +499,7 @@ export default function UserPage() {
                   value={formTemplate}
                   onChange={(e) => setFormTemplate(e.target.value)}
                   rows={3}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#1976D2]/50 font-mono"
+                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20 font-mono"
                   placeholder="Template data dari mesin"
                 />
               </div>
@@ -522,7 +514,7 @@ export default function UserPage() {
               <button
                 onClick={showEditModal ? handleEditUser : handleAddUser}
                 disabled={formLoading}
-                className="flex items-center gap-2 px-4 py-2 bg-[#1976D2] hover:bg-[#1565C0] disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
               >
                 {formLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                 {showEditModal ? "Simpan" : "Tambah"}
@@ -549,7 +541,7 @@ export default function UserPage() {
               <button
                 onClick={handleDeleteUser}
                 disabled={formLoading}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
               >
                 {formLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                 Hapus
@@ -581,7 +573,7 @@ export default function UserPage() {
                       className={cn(
                         "flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all duration-200",
                         regVerification === num
-                          ? "bg-[#1976D2]/15 border-[#1976D2]/50 text-[#1976D2]"
+                          ? "bg-white/10 border-white/20 text-white"
                           : "bg-white/[0.03] border-white/[0.06] text-gray-400 hover:bg-white/[0.06] hover:text-gray-300"
                       )}
                     >
@@ -600,7 +592,7 @@ export default function UserPage() {
                     className={cn(
                       "flex items-center gap-3 p-3 rounded-xl border transition-all duration-200",
                       regVerification === 12
-                        ? "bg-[#1976D2]/15 border-[#1976D2]/50 text-[#1976D2]"
+                        ? "bg-white/10 border-white/20 text-white"
                         : "bg-white/[0.03] border-white/[0.06] text-gray-400 hover:bg-white/[0.06] hover:text-gray-300"
                     )}
                   >
@@ -612,7 +604,7 @@ export default function UserPage() {
                     className={cn(
                       "flex items-center gap-3 p-3 rounded-xl border transition-all duration-200",
                       regVerification === 13
-                        ? "bg-[#1976D2]/15 border-[#1976D2]/50 text-[#1976D2]"
+                        ? "bg-white/10 border-white/20 text-white"
                         : "bg-white/[0.03] border-white/[0.06] text-gray-400 hover:bg-white/[0.06] hover:text-gray-300"
                     )}
                   >
@@ -629,7 +621,7 @@ export default function UserPage() {
               <button
                 onClick={handleRegisterOnline}
                 disabled={regLoading}
-                className="flex items-center gap-2 px-4 py-2 bg-[#1976D2] hover:bg-[#1565C0] disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 disabled:opacity-50 rounded-xl text-sm font-medium text-white transition-colors"
               >
                 {regLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                 Kirim
@@ -651,7 +643,7 @@ export default function UserPage() {
             </div>
             <div className="p-5 space-y-4">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-[#1976D2]/10 flex items-center justify-center text-2xl font-bold text-[#1976D2]">
+                <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center text-2xl font-bold text-white">
                   {selectedUser.name?.[0] || "?"}
                 </div>
                 <div>
@@ -678,7 +670,7 @@ export default function UserPage() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-gray-400">Template</span>
-                    <button onClick={copyTemplate} className="flex items-center gap-1 text-xs text-[#1976D2] hover:text-[#1565C0]">
+                    <button onClick={copyTemplate} className="flex items-center gap-1 text-xs text-gray-400 hover:text-white">
                       {copiedTemplate ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                       {copiedTemplate ? "Copied!" : "Copy"}
                     </button>
@@ -691,13 +683,13 @@ export default function UserPage() {
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={() => { setShowDetailDrawer(false); openRegisterModal(selectedUser); }}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#1976D2] hover:bg-[#1565C0] rounded-xl text-sm font-medium text-white transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/15 rounded-xl text-sm font-medium text-white transition-colors"
                 >
                   <UserPlus className="w-4 h-4" /> Register Online
                 </button>
                 <button
                   onClick={() => { setShowDetailDrawer(false); openDeleteDialog(selectedUser); }}
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600/10 hover:bg-red-600/20 border border-red-500/30 rounded-xl text-sm font-medium text-red-400 transition-colors"
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm font-medium text-gray-400 transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
