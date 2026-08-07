@@ -78,12 +78,11 @@ export default function PinPage() {
           if (attempts >= maxAttempts) {
             clearInterval(pollInterval);
             setFetching(false);
-            const { data: finalPins } = await createClient()
+            const { count } = await createClient()
               .from("device_pins")
               .select("id", { count: "exact", head: true })
-              .eq("cloud_id", cloudId);
-            const count = finalPins?.length ?? 0;
-            if (count === 0) {
+              .eq("cloud_id", await getClientCloudId());
+            if (!count || count === 0) {
               showToast("Webhook tidak diterima. Pastikan URL webhook sudah dikonfigurasi di panel Fingerspot.", "error");
             } else {
               showToast(`Berhasil! ${count} PIN ditemukan.`, "success");

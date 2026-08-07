@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import GlassCard from "../components/GlassCard";
 import {
-  Settings, Save, Loader2, Copy, Check, RefreshCw, AlertTriangle, Clock, Shield, ChevronDown,
+  Settings, Save, Loader2, Copy, Check, RefreshCw, AlertTriangle, Clock, Shield,
 } from "lucide-react";
 
 function useLiveClock(timezone: string) {
@@ -51,8 +51,6 @@ export default function PengaturanPage() {
   const [apiKey, setApiKey] = useState("");
   const [showApiKey, setShowApiKey] = useState(false);
   const [timezone, setTimezone] = useState("Asia/Jakarta");
-  const [tzDropdownOpen, setTzDropdownOpen] = useState(false);
-  const tzDropdownRef = useRef<HTMLDivElement>(null);
   const [restarting, setRestarting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showRestartDialog, setShowRestartDialog] = useState(false);
@@ -65,17 +63,6 @@ export default function PengaturanPage() {
     { value: "Asia/Makassar", label: "GMT+8 (WITA)", sub: "Asia/Makassar" },
     { value: "Asia/Jayapura", label: "GMT+9 (WIT)", sub: "Asia/Jayapura" },
   ];
-  const selectedTz = tzOptions.find((o) => o.value === timezone) || tzOptions[0];
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (tzDropdownRef.current && !tzDropdownRef.current.contains(e.target as Node)) {
-        setTzDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const loadSettings = async () => {
     setLoading(true);
@@ -267,41 +254,25 @@ export default function PengaturanPage() {
                 </div>
               )}
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Timezone</label>
-                <div ref={tzDropdownRef} className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setTzDropdownOpen(!tzDropdownOpen)}
-                    className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white text-left flex items-center justify-between focus:outline-none focus:border-[#1976D2]/50 transition-colors"
-                  >
-                    <span>
-                      <span className="font-medium">{selectedTz.label}</span>
-                      <span className="text-gray-400 ml-1.5">- {selectedTz.sub}</span>
-                    </span>
-                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${tzDropdownOpen ? "rotate-180" : ""}`} />
-                  </button>
-                  {tzDropdownOpen && (
-                    <div className="absolute z-50 w-full mt-1 bg-[#1a1a24] border border-white/10 rounded-xl shadow-2xl overflow-hidden">
-                      {tzOptions.map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          onClick={() => { setTimezone(opt.value); setTzDropdownOpen(false); }}
-                          className={`w-full px-4 py-2.5 text-left text-sm flex items-center justify-between transition-colors ${
-                            timezone === opt.value
-                              ? "bg-[#1976D2]/15 text-[#1976D2]"
-                              : "text-gray-300 hover:bg-white/5"
-                          }`}
-                        >
-                          <span>
-                            <span className="font-medium">{opt.label}</span>
-                            <span className="text-gray-400 ml-1.5">- {opt.sub}</span>
-                          </span>
-                          {timezone === opt.value && <Check className="w-4 h-4" />}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                <label className="block text-sm text-gray-400 mb-2">Timezone</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {tzOptions.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setTimezone(opt.value)}
+                      className={`px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                        timezone === opt.value
+                          ? "bg-[#1976D2] text-white shadow-lg shadow-[#1976D2]/20"
+                          : "bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white"
+                      }`}
+                    >
+                      <div className="text-center">
+                        <div className="text-[13px]">{opt.label}</div>
+                        <div className={`text-[11px] mt-0.5 ${timezone === opt.value ? "text-white/70" : "text-gray-500"}`}>{opt.sub}</div>
+                      </div>
+                    </button>
+                  ))}
                 </div>
               </div>
               <button
