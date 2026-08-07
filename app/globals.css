@@ -76,3 +76,14 @@ body {
 select {
   color-scheme: dark;
 }
+
+/* Sidebar hover expand */
+aside:hover {
+  width: 220px;
+}
+aside:hover .sidebar-label {
+  display: inline;
+}
+aside:hover .sidebar-cloud {
+  display: block;
+}
