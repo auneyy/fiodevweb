@@ -22,3 +22,17 @@ export async function getClientCloudId(): Promise<string | null> {
 
   return settings?.find((s) => s.key === "cloud_id")?.value || null;
 }
+
+export async function getUserOwnCloudId(): Promise<string | null> {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data } = await supabase
+    .from("user_settings")
+    .select("cloud_id")
+    .eq("user_id", user.id)
+    .single();
+
+  return data?.cloud_id || null;
+}

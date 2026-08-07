@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getClientCloudId } from "@/lib/user-settings-client";
+import { getClientCloudId, getUserOwnCloudId } from "@/lib/user-settings-client";
 import GlassCard from "./components/GlassCard";
 import { formatDate, formatVerifyType, formatStatusScan } from "@/lib/utils";
 import {
@@ -41,12 +41,27 @@ export default function DashboardPage() {
   const [recent, setRecent] = useState<RecentAttendance[]>([]);
   const [chartData, setChartData] = useState<DayData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasConfig, setHasConfig] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
     const fetchData = async () => {
       try {
-        const cloudId = await getClientCloudId();
+        const ownCloudId = await getUserOwnCloudId();
+        const cloudId = ownCloudId || await getClientCloudId();
+        setHasConfig(!!ownCloudId);
+
+        if (!cloudId) {
+          setStats([
+            { label: "Total User", value: "0", icon: Users, color: "text-[#1976D2]" },
+            { label: "Absensi Hari Ini", value: "0", icon: Clock, color: "text-emerald-500" },
+            { label: "Total PIN", value: "0", icon: Fingerprint, color: "text-purple-500" },
+            { label: "Status Mesin", value: "Belum Diatur", icon: Wifi, color: "text-gray-500" },
+          ]);
+          setChartData([]);
+          setRecent([]);
+          return;
+        }
 
         const [usersCount, attCount, pinsCount] = await Promise.all([
           supabase.from("users").select("id", { count: "exact", head: true }).eq("cloud_id", cloudId),
@@ -60,7 +75,7 @@ export default function DashboardPage() {
           { label: "Total User", value: String(usersCount.count ?? 0), icon: Users, color: "text-[#1976D2]" },
           { label: "Absensi Hari Ini", value: String(attCount.count ?? 0), icon: Clock, color: "text-emerald-500" },
           { label: "Total PIN", value: String(pinsCount.count ?? 0), icon: Fingerprint, color: "text-purple-500" },
-          { label: "Status Mesin", value: cloudId || "Belum Diatur", icon: Wifi, color: "text-blue-400" },
+          { label: "Status Mesin", value: ownCloudId ? cloudId : "Belum Diatur", icon: Wifi, color: ownCloudId ? "text-blue-400" : "text-gray-500" },
         ]);
 
         const days: DayData[] = [];
@@ -163,9 +178,11 @@ export default function DashboardPage() {
                   <Icon className="w-5 h-5" />
                 </div>
                 {card.label === "Status Mesin" && (
-                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-500/10">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[10px] font-medium text-green-400 uppercase">Online</span>
+                  <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full ${hasConfig ? "bg-green-500/10" : "bg-gray-500/10"}`}>
+                    <div className={`w-1.5 h-1.5 rounded-full ${hasConfig ? "bg-green-500 animate-pulse" : "bg-gray-500"}`} />
+                    <span className={`text-[10px] font-medium uppercase ${hasConfig ? "text-green-400" : "text-gray-500"}`}>
+                      {hasConfig ? "Online" : "Offline"}
+                    </span>
                   </div>
                 )}
               </div>
