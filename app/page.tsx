@@ -234,8 +234,8 @@ export default function DashboardPage() {
           <span className="text-sm font-medium text-gray-300">Data User</span>
         </Link>
         <Link href="/absensi" className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-emerald-500/[0.04] group transition-all duration-300">
-          <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-            <Clock className="w-7 h-7 text-emerald-500" />
+          <div className="w-14 h-14 rounded-2xl bg-[#1976D2]/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <Clock className="w-7 h-7 text-[#1976D2]" />
           </div>
           <span className="text-sm font-medium text-gray-300">Data Absensi</span>
         </Link>
