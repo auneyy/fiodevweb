@@ -24,8 +24,8 @@ export function formatVerifyType(code: number): string {
   if (code === 1) return "Jari";
   if (code === 2) return "Kartu";
   if (code === 3 || code === 4 || code === 15) return "Wajah";
-  if (code === 10 || code === 11) return "Vena";
-  return `Tidak Diketahui (${code})`;
+  if (code === 6 || code === 10 || code === 11) return "Vena";
+  return "Tidak Diketahui";
 }
 
 export function formatStatusScan(code: number): string {
@@ -39,7 +39,7 @@ export function formatVerifyBadgeClass(code: number): string {
   if (code === 1) return "bg-blue-500/15 text-blue-400 border border-blue-500/30";
   if (code === 2) return "bg-purple-500/15 text-purple-400 border border-purple-500/30";
   if (code === 3 || code === 4 || code === 15) return "bg-green-500/15 text-green-400 border border-green-500/30";
-  if (code === 10 || code === 11) return "bg-purple-500/15 text-purple-400 border border-purple-500/30";
+  if (code === 6 || code === 10 || code === 11) return "bg-purple-500/15 text-purple-400 border border-purple-500/30";
   return "bg-gray-500/15 text-gray-400 border border-gray-500/30";
 }
 
