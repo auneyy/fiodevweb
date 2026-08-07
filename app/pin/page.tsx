@@ -186,32 +186,32 @@ export default function PinPage() {
         {loading ? (
           <div className="p-6 space-y-3">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-12 bg-white/5 rounded animate-pulse" />
+              <div key={i} className="h-14 bg-white/5 rounded animate-pulse" />
             ))}
           </div>
         ) : (
            <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-white/[0.06]">
-                  <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">No</th>
-                  <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">PIN</th>
-                  <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">Tanggal Fetch</th>
+                <tr className="border-b border-white/[0.08]">
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">No</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">PIN</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Tanggal Fetch</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className="px-4 py-12 text-center text-gray-500 text-sm">
+                    <td colSpan={3} className="px-5 py-16 text-center text-gray-500 text-[15px]">
                       {pins.length === 0 ? "Belum ada data PIN" : "PIN tidak ditemukan"}
                     </td>
                   </tr>
                 ) : (
                   filtered.map((p, idx) => (
-                    <tr key={p.id} className="hover:bg-white/[0.02] border-b border-white/[0.04] transition-colors duration-200">
-                      <td className="px-4 py-3 text-sm text-gray-500">{idx + 1}</td>
-                      <td className="px-4 py-3 text-sm font-semibold text-white font-mono">{p.pin}</td>
-                      <td className="px-4 py-3 text-sm text-gray-400">{formatDate(p.fetched_at)}</td>
+                    <tr key={p.id} className="hover:bg-white/[0.03] border-b border-white/[0.04] transition-colors duration-200">
+                      <td className="px-5 py-4 text-[15px] text-gray-500">{idx + 1}</td>
+                      <td className="px-5 py-4 text-[15px] font-semibold text-white font-mono">{p.pin}</td>
+                      <td className="px-5 py-4 text-[15px] text-gray-400">{formatDate(p.fetched_at)}</td>
                     </tr>
                   ))
                 )}

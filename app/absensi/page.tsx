@@ -198,7 +198,7 @@ export default function AbsensiPage() {
         {loading ? (
           <div className="p-6 space-y-3">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-12 bg-white/5 rounded animate-pulse" />
+              <div key={i} className="h-14 bg-white/5 rounded animate-pulse" />
             ))}
           </div>
         ) : (
@@ -206,31 +206,31 @@ export default function AbsensiPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-white/5 border-b border-white/10">
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">No</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">PIN</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Nama</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Waktu Scan</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Metode</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold text-center">Status</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Foto</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">No</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">PIN</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Nama</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Waktu Scan</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Metode</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold text-center">Status</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Foto</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                    <td colSpan={7} className="px-5 py-16 text-center text-gray-500 text-[15px]">
                       Tidak ada data absensi
                     </td>
                   </tr>
                 ) : (
                   filtered.map((row, idx) => (
                     <tr key={row.id} className="hover:bg-white/5 border-b border-white/5 transition-colors">
-                      <td className="px-4 py-3 text-sm text-gray-200">{idx + 1}</td>
-                      <td className="px-4 py-3 text-sm font-bold text-white font-mono">{row.pin}</td>
-                      <td className="px-4 py-3 text-sm text-gray-200">{row.name}</td>
-                      <td className="px-4 py-3 text-sm text-gray-200">{formatDate(row.scan_time)}</td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      <td className="px-5 py-4 text-[15px] text-gray-200">{idx + 1}</td>
+                      <td className="px-5 py-4 text-[15px] font-bold text-white font-mono">{row.pin}</td>
+                      <td className="px-5 py-4 text-[15px] text-gray-200">{row.name}</td>
+                      <td className="px-5 py-4 text-[15px] text-gray-200">{formatDate(row.scan_time)}</td>
+                      <td className="px-5 py-4">
+                        <span className={`px-2.5 py-1 rounded-full text-[13px] font-medium ${
                           row.verify >= 0 && row.verify <= 9 ? "bg-blue-500/15 text-blue-400 border border-blue-500/30"
                           : row.verify === 15 ? "bg-green-500/15 text-green-400 border border-green-500/30"
                           : row.verify === 2 ? "bg-purple-500/15 text-purple-400 border border-purple-500/30"
@@ -239,8 +239,8 @@ export default function AbsensiPage() {
                           {formatVerifyType(row.verify)}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-center">
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      <td className="px-5 py-4 text-center">
+                        <span className={`px-2.5 py-1 rounded-full text-[13px] font-medium ${
                           row.status_scan === 0 ? "bg-green-500/15 text-green-400 border border-green-500/30"
                           : row.status_scan === 1 ? "bg-red-500/15 text-red-400 border border-red-500/30"
                           : "bg-gray-500/15 text-gray-400 border border-gray-500/30"
@@ -248,7 +248,7 @@ export default function AbsensiPage() {
                           {formatStatusScan(row.status_scan)}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-200">
+                      <td className="px-5 py-4 text-[15px] text-gray-200">
                         {row.photo_url ? (
                           <a href={row.photo_url} target="_blank" rel="noopener noreferrer" className="text-[#1976D2] hover:underline">
                             Lihat

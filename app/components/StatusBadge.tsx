@@ -61,7 +61,7 @@ function getColors(value: string, type: BadgeType): string {
 export default function StatusBadge({ value, type = "status" }: StatusBadgeProps) {
   return (
     <span className={cn(
-      "px-2.5 py-0.5 rounded-full text-xs font-medium capitalize inline-block",
+      "px-2.5 py-1 rounded-full text-[13px] font-medium capitalize inline-block",
       getColors(value, type)
     )}>
       {value}

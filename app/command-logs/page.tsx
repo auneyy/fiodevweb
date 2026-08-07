@@ -98,7 +98,7 @@ export default function CommandLogsPage() {
         {loading ? (
           <div className="p-6 space-y-3">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-12 bg-white/5 rounded animate-pulse" />
+              <div key={i} className="h-14 bg-white/5 rounded animate-pulse" />
             ))}
           </div>
         ) : (
@@ -106,17 +106,17 @@ export default function CommandLogsPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-white/5 border-b border-white/10">
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold w-8"></th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Waktu</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Tipe Command</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Trans ID</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Status</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold w-8"></th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Waktu</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Tipe Command</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Trans ID</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                    <td colSpan={5} className="px-5 py-16 text-center text-gray-500 text-[15px]">
                       Tidak ada data command log
                     </td>
                   </tr>
@@ -128,23 +128,23 @@ export default function CommandLogsPage() {
                         className="hover:bg-white/5 border-b border-white/5 transition-colors cursor-pointer"
                         onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
                       >
-                        <td className="px-4 py-3">
+                        <td className="px-5 py-4">
                           {expandedId === log.id ? (
-                            <ChevronDown className="w-4 h-4 text-gray-400" />
+                            <ChevronDown className="w-5 h-5 text-gray-400" />
                           ) : (
-                            <ChevronRight className="w-4 h-4 text-gray-400" />
+                            <ChevronRight className="w-5 h-5 text-gray-400" />
                           )}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-200">{formatDate(log.created_at)}</td>
-                        <td className="px-4 py-3">
-                          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">
+                        <td className="px-5 py-4 text-[15px] text-gray-200">{formatDate(log.created_at)}</td>
+                        <td className="px-5 py-4">
+                          <span className="px-2.5 py-1 rounded-full text-[13px] font-medium bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">
                             {log.command_type}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-sm font-mono text-gray-300">{log.trans_id}</td>
-                        <td className="px-4 py-3">
+                        <td className="px-5 py-4 text-[15px] font-mono text-gray-300">{log.trans_id}</td>
+                        <td className="px-5 py-4">
                           <span className={cn(
-                            "px-2.5 py-0.5 rounded-full text-xs font-medium",
+                            "px-2.5 py-1 rounded-full text-[13px] font-medium",
                             log.status === "success" ? "bg-green-500/15 text-green-400 border border-green-500/30"
                             : log.status === "failed" ? "bg-red-500/15 text-red-400 border border-red-500/30"
                             : "bg-yellow-500/15 text-yellow-400 border border-yellow-500/30"
@@ -158,11 +158,11 @@ export default function CommandLogsPage() {
                           <td colSpan={5} className="px-8 py-4 bg-white/[0.02]">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                               <div>
-                                <h4 className="text-xs text-gray-400 mb-2">Request Body</h4>
+                                <h4 className="text-xs text-gray-400 mb-2 uppercase tracking-wider">Request Body</h4>
                                 <JsonViewer data={log.request_body || {}} maxHeight="200px" />
                               </div>
                               <div>
-                                <h4 className="text-xs text-gray-400 mb-2">Response Body</h4>
+                                <h4 className="text-xs text-gray-400 mb-2 uppercase tracking-wider">Response Body</h4>
                                 <JsonViewer data={log.response_body || {}} maxHeight="200px" />
                               </div>
                             </div>

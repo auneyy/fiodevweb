@@ -155,7 +155,7 @@ export default function DashboardPage() {
           <div className="animate-pulse space-y-4">
             <div className="h-6 w-48 bg-white/10 rounded" />
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-12 bg-white/5 rounded" />
+              <div key={i} className="h-14 bg-white/5 rounded" />
             ))}
           </div>
         </GlassCard>
@@ -252,43 +252,43 @@ export default function DashboardPage() {
             <Clock className="w-4 h-4 text-[#1976D2]" />
             <h3 className="text-sm font-semibold text-gray-300">Absensi Terbaru</h3>
           </div>
-          <Link className="text-[#1976D2] hover:text-[#1565C0] text-xs font-medium flex items-center gap-1 transition-colors" href="/absensi">
+          <Link className="text-[#1976D2] hover:text-[#1565C0] text-[13px] font-medium flex items-center gap-1 transition-colors" href="/absensi">
             Lihat Semua <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-white/[0.06]">
-                <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">No</th>
-                <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">PIN</th>
-                <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">Nama</th>
-                <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">Waktu Scan</th>
-                <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">Metode</th>
-                <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium text-center">Status</th>
+              <tr className="border-b border-white/[0.08]">
+                <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">No</th>
+                <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">PIN</th>
+                <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Nama</th>
+                <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Waktu Scan</th>
+                <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Metode</th>
+                <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold text-center">Status</th>
               </tr>
             </thead>
             <tbody>
               {recent.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-gray-500 text-sm">
+                  <td colSpan={6} className="px-5 py-16 text-center text-gray-500 text-[15px]">
                     Belum ada data absensi
                   </td>
                 </tr>
               ) : (
                 recent.map((row, idx) => (
-                  <tr key={row.id} className="hover:bg-white/[0.02] border-b border-white/[0.04] transition-colors duration-200">
-                    <td className="px-4 py-3 text-sm text-gray-500">{idx + 1}</td>
-                    <td className="px-4 py-3 text-sm font-semibold text-white font-mono">{row.pin}</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">{row.name}</td>
-                    <td className="px-4 py-3 text-sm text-gray-400">{formatDate(row.scan_time)}</td>
-                    <td className="px-4 py-3">
-                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-[#1976D2]/10 text-[#1976D2]">
+                  <tr key={row.id} className="hover:bg-white/[0.03] border-b border-white/[0.04] transition-colors duration-200">
+                    <td className="px-5 py-4 text-[15px] text-gray-500">{idx + 1}</td>
+                    <td className="px-5 py-4 text-[15px] font-semibold text-white font-mono">{row.pin}</td>
+                    <td className="px-5 py-4 text-[15px] text-gray-300">{row.name}</td>
+                    <td className="px-5 py-4 text-[15px] text-gray-400">{formatDate(row.scan_time)}</td>
+                    <td className="px-5 py-4">
+                      <span className="px-2.5 py-1 rounded-full text-[13px] font-medium bg-[#1976D2]/10 text-[#1976D2]">
                         {formatVerifyType(row.verify)}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-center">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${row.status_scan === 0 ? "bg-emerald-500/10 text-emerald-400" : row.status_scan === 1 ? "bg-red-500/10 text-red-400" : "bg-gray-500/10 text-gray-400"}`}>
+                    <td className="px-5 py-4 text-center">
+                      <span className={`px-2.5 py-1 rounded-full text-[13px] font-medium ${row.status_scan === 0 ? "bg-emerald-500/10 text-emerald-400" : row.status_scan === 1 ? "bg-red-500/10 text-red-400" : "bg-gray-500/10 text-gray-400"}`}>
                         {formatStatusScan(row.status_scan)}
                       </span>
                     </td>

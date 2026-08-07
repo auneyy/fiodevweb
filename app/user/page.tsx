@@ -353,40 +353,40 @@ export default function UserPage() {
         {loading ? (
           <div className="p-6 space-y-3">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-12 bg-white/5 rounded animate-pulse" />
+              <div key={i} className="h-14 bg-white/5 rounded animate-pulse" />
             ))}
           </div>
         ) : (
            <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-white/[0.06]">
-                  <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">No</th>
-                  <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">PIN</th>
-                  <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">Nama</th>
-                  <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">Privilege</th>
-                   <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">Jari</th>
-                   <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">Wajah</th>
-                   <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium">Vena</th>
-                  <th className="px-4 py-3 text-[11px] uppercase tracking-wider text-gray-500 font-medium text-right">Aksi</th>
+                <tr className="border-b border-white/[0.08]">
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">No</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">PIN</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Nama</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Privilege</th>
+                   <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Jari</th>
+                   <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Wajah</th>
+                   <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Vena</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                     <td colSpan={8} className="px-4 py-12 text-center text-gray-500 text-sm">
+                     <td colSpan={8} className="px-5 py-16 text-center text-gray-500 text-[15px]">
                       Tidak ada data user
                     </td>
                   </tr>
                 ) : (
                   filtered.map((user, idx) => (
-                    <tr key={user.id} className="hover:bg-white/[0.02] border-b border-white/[0.04] transition-colors duration-200">
-                      <td className="px-4 py-3 text-sm text-gray-500">{idx + 1}</td>
-                      <td className="px-4 py-3 text-sm font-semibold text-white font-mono">{user.pin}</td>
-                      <td className="px-4 py-3 text-sm text-gray-300">{user.name}</td>
-                      <td className="px-4 py-3">
+                    <tr key={user.id} className="hover:bg-white/[0.03] border-b border-white/[0.04] transition-colors duration-200">
+                      <td className="px-5 py-4 text-[15px] text-gray-500">{idx + 1}</td>
+                      <td className="px-5 py-4 text-[15px] font-semibold text-white font-mono">{user.pin}</td>
+                      <td className="px-5 py-4 text-[15px] text-gray-300">{user.name}</td>
+                      <td className="px-5 py-4">
                         <span className={cn(
-                          "px-2 py-0.5 rounded-full text-xs font-medium",
+                          "px-2.5 py-1 rounded-full text-[13px] font-medium",
                           user.privilege === 14
                             ? "bg-orange-500/10 text-orange-400"
                             : "bg-[#1976D2]/10 text-[#1976D2]"
@@ -394,10 +394,10 @@ export default function UserPage() {
                           {user.privilege === 14 ? "Admin" : "User"}
                         </span>
                       </td>
-                       <td className="px-4 py-3 text-sm text-gray-400">{user.finger > 0 ? `${user.finger}` : "-"}</td>
-                       <td className="px-4 py-3 text-sm text-gray-400">{user.face > 0 ? "Ya" : "-"}</td>
-                       <td className="px-4 py-3 text-sm text-gray-400">{user.vein > 0 ? "Ya" : "-"}</td>
-                      <td className="px-4 py-3 text-right">
+                       <td className="px-5 py-4 text-[15px] text-gray-400">{user.finger > 0 ? `${user.finger}` : "-"}</td>
+                       <td className="px-5 py-4 text-[15px] text-gray-400">{user.face > 0 ? "Ya" : "-"}</td>
+                       <td className="px-5 py-4 text-[15px] text-gray-400">{user.vein > 0 ? "Ya" : "-"}</td>
+                      <td className="px-5 py-4 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <button onClick={() => openDetailDrawer(user)} className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors" title="Detail">
                             <Eye className="w-4 h-4" />

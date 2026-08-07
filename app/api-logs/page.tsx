@@ -99,7 +99,7 @@ export default function ApiLogsPage() {
         {loading ? (
           <div className="p-6 space-y-3">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-12 bg-white/5 rounded animate-pulse" />
+              <div key={i} className="h-14 bg-white/5 rounded animate-pulse" />
             ))}
           </div>
         ) : (
@@ -107,35 +107,35 @@ export default function ApiLogsPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-white/5 border-b border-white/10">
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Waktu</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Tipe API</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Trans ID</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold">Status</th>
-                  <th className="px-4 py-3 text-xs uppercase tracking-wider text-gray-400 font-semibold text-right">Detail</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Waktu</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Tipe API</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Trans ID</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Status</th>
+                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold text-right">Detail</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                    <td colSpan={5} className="px-5 py-16 text-center text-gray-500 text-[15px]">
                       Tidak ada data log
                     </td>
                   </tr>
                 ) : (
                   filtered.map((log) => (
                     <tr key={log.id} className="hover:bg-white/5 border-b border-white/5 transition-colors">
-                      <td className="px-4 py-3 text-sm text-gray-200">{formatDate(log.created_at)}</td>
-                      <td className="px-4 py-3">
+                      <td className="px-5 py-4 text-[15px] text-gray-200">{formatDate(log.created_at)}</td>
+                      <td className="px-5 py-4">
                         <StatusBadge value={log.api_type} type="api_type" />
                       </td>
-                      <td className="px-4 py-3 text-sm font-mono text-gray-300">{log.trans_id}</td>
-                      <td className="px-4 py-3">
+                      <td className="px-5 py-4 text-[15px] font-mono text-gray-300">{log.trans_id}</td>
+                      <td className="px-5 py-4">
                         <StatusBadge value={log.status} />
                       </td>
-                      <td className="px-4 py-3 text-right">
+                      <td className="px-5 py-4 text-right">
                         <Link
                           href={`/api-logs/${log.id}`}
-                          className="inline-flex items-center gap-1 text-sm text-[#1976D2] hover:text-[#1565C0]"
+                          className="inline-flex items-center gap-1 text-[15px] text-[#1976D2] hover:text-[#1565C0]"
                         >
                           Lihat <ChevronRight className="w-4 h-4" />
                         </Link>
