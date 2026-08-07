@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import GlassCard from "../components/GlassCard";
 import {
-  Settings, Save, Loader2, Copy, Check, RefreshCw, AlertTriangle, Clock, Shield,
+  Settings, Save, Loader2, Copy, Check, RefreshCw, AlertTriangle, Clock, Shield, ChevronDown,
 } from "lucide-react";
 
 function useLiveClock(timezone: string) {
@@ -51,12 +51,31 @@ export default function PengaturanPage() {
   const [apiKey, setApiKey] = useState("");
   const [showApiKey, setShowApiKey] = useState(false);
   const [timezone, setTimezone] = useState("Asia/Jakarta");
+  const [tzDropdownOpen, setTzDropdownOpen] = useState(false);
+  const tzDropdownRef = useRef<HTMLDivElement>(null);
   const [restarting, setRestarting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showRestartDialog, setShowRestartDialog] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [twoFaEnabled, setTwoFaEnabled] = useState(false);
   const liveClock = useLiveClock(timezone);
+
+  const tzOptions = [
+    { value: "Asia/Jakarta", label: "GMT+7 (WIB)", sub: "Asia/Jakarta" },
+    { value: "Asia/Makassar", label: "GMT+8 (WITA)", sub: "Asia/Makassar" },
+    { value: "Asia/Jayapura", label: "GMT+9 (WIT)", sub: "Asia/Jayapura" },
+  ];
+  const selectedTz = tzOptions.find((o) => o.value === timezone) || tzOptions[0];
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (tzDropdownRef.current && !tzDropdownRef.current.contains(e.target as Node)) {
+        setTzDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const loadSettings = async () => {
     setLoading(true);
@@ -249,15 +268,41 @@ export default function PengaturanPage() {
               )}
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Timezone</label>
-                <select
-                  value={timezone}
-                  onChange={(e) => setTimezone(e.target.value)}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#1976D2]/50"
-                >
-                  <option value="Asia/Jakarta">GMT+7 (WIB) - Asia/Jakarta</option>
-                  <option value="Asia/Makassar">GMT+8 (WITA) - Asia/Makassar</option>
-                  <option value="Asia/Jayapura">GMT+9 (WIT) - Asia/Jayapura</option>
-                </select>
+                <div ref={tzDropdownRef} className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setTzDropdownOpen(!tzDropdownOpen)}
+                    className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white text-left flex items-center justify-between focus:outline-none focus:border-[#1976D2]/50 transition-colors"
+                  >
+                    <span>
+                      <span className="font-medium">{selectedTz.label}</span>
+                      <span className="text-gray-400 ml-1.5">- {selectedTz.sub}</span>
+                    </span>
+                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${tzDropdownOpen ? "rotate-180" : ""}`} />
+                  </button>
+                  {tzDropdownOpen && (
+                    <div className="absolute z-50 w-full mt-1 bg-[#1a1a24] border border-white/10 rounded-xl shadow-2xl overflow-hidden">
+                      {tzOptions.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => { setTimezone(opt.value); setTzDropdownOpen(false); }}
+                          className={`w-full px-4 py-2.5 text-left text-sm flex items-center justify-between transition-colors ${
+                            timezone === opt.value
+                              ? "bg-[#1976D2]/15 text-[#1976D2]"
+                              : "text-gray-300 hover:bg-white/5"
+                          }`}
+                        >
+                          <span>
+                            <span className="font-medium">{opt.label}</span>
+                            <span className="text-gray-400 ml-1.5">- {opt.sub}</span>
+                          </span>
+                          {timezone === opt.value && <Check className="w-4 h-4" />}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
               <button
                 onClick={handleSetTime}

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callFingerspot } from "@/lib/fingerspot";
-import { getRequestUserCloudId } from "@/lib/request-user";
+import { getRequestUserCredentials } from "@/lib/request-user";
 import { createClient } from "@supabase/supabase-js";
 
 export async function POST(request: NextRequest) {
   try {
-    const cloudId = await getRequestUserCloudId(request.cookies);
-    if (!cloudId) {
+    const creds = await getRequestUserCredentials(request.cookies);
+    if (!creds) {
       return NextResponse.json(
         { success: false, message: "Tidak terautentikasi atau cloud_id belum diatur" },
         { status: 401 }
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     const { data: pins } = await supabase
       .from("device_pins")
       .select("pin")
-      .eq("cloud_id", cloudId);
+      .eq("cloud_id", creds.cloudId);
 
     if (!pins || pins.length === 0) {
       return NextResponse.json({ success: false, message: "Tidak ada PIN ditemukan. Ambil PIN terlebih dahulu." });
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 
     let lastResult;
     for (const { pin } of pins) {
-      lastResult = await callFingerspot("get_userinfo", { pin });
+      lastResult = await callFingerspot("get_userinfo", { pin }, creds);
     }
 
     return NextResponse.json(lastResult);

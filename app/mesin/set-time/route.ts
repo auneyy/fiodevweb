@@ -1,21 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callFingerspot } from "@/lib/fingerspot";
-import { getRequestUserCloudId } from "@/lib/request-user";
+import { getRequestUserCredentials } from "@/lib/request-user";
 import { createClient } from "@supabase/supabase-js";
 
 export async function POST(request: NextRequest) {
   try {
     const { timezone } = await request.json();
 
-    const cloudId = await getRequestUserCloudId(request.cookies);
-    if (!cloudId) {
+    const creds = await getRequestUserCredentials(request.cookies);
+    if (!creds) {
       return NextResponse.json(
         { success: false, message: "Tidak terautentikasi atau cloud_id belum diatur" },
         { status: 401 }
       );
     }
 
-    const result = await callFingerspot("set_time", { timezone });
+    const result = await callFingerspot("set_time", { timezone }, creds);
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -23,8 +23,9 @@ export async function POST(request: NextRequest) {
     );
 
     await supabase.from("command_logs").insert({
-      cloud_id: cloudId,
+      cloud_id: creds.cloudId,
       command_type: "set_time",
+      trans_id: result.transId,
       request_body: { timezone },
       status: "pending",
     });

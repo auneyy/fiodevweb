@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callFingerspot } from "@/lib/fingerspot";
+import { getRequestUserCredentials } from "@/lib/request-user";
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,7 +24,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = await callFingerspot("get_attlog", { start_date, end_date });
+    const creds = await getRequestUserCredentials(request.cookies);
+    if (!creds) {
+      return NextResponse.json(
+        { success: false, message: "Tidak terautentikasi atau cloud_id belum diatur" },
+        { status: 401 }
+      );
+    }
+
+    const result = await callFingerspot("get_attlog", { start_date, end_date }, creds);
     return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json(

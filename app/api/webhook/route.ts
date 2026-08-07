@@ -161,39 +161,51 @@ export async function POST(request: NextRequest) {
       case "set_time": {
         if (!data) break;
         const d = data as Record<string, unknown>;
-        await supabase.from("command_logs").insert({
-          cloud_id: cloudId,
-          trans_id: transId,
-          command_type: "set_time",
-          response_body: body,
-          status: d.status === "1" ? "success" : "failed",
-        });
+        const statusVal = d.status === "1" ? "success" : "failed";
+        const { error: updateErr } = await supabase
+          .from("command_logs")
+          .update({
+            status: statusVal,
+            response_body: body,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("trans_id", transId)
+          .eq("command_type", "set_time");
+        if (updateErr) console.error("[webhook] set_time update error:", updateErr);
         break;
       }
 
       case "register_online": {
         if (!data) break;
         const d = data as Record<string, unknown>;
-        await supabase.from("command_logs").insert({
-          cloud_id: cloudId,
-          trans_id: transId,
-          command_type: "register_online",
-          response_body: body,
-          status: d.status === "1" ? "success" : "failed",
-        });
+        const statusVal = d.status === "1" ? "success" : "failed";
+        const { error: updateErr } = await supabase
+          .from("command_logs")
+          .update({
+            status: statusVal,
+            response_body: body,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("trans_id", transId)
+          .eq("command_type", "register_online");
+        if (updateErr) console.error("[webhook] register_online update error:", updateErr);
         break;
       }
 
       case "restart_device": {
         if (!data) break;
         const d = data as Record<string, unknown>;
-        await supabase.from("command_logs").insert({
-          cloud_id: cloudId,
-          trans_id: transId,
-          command_type: "restart_device",
-          response_body: body,
-          status: d.status === "1" ? "success" : "failed",
-        });
+        const statusVal = d.status === "1" ? "success" : "failed";
+        const { error: updateErr } = await supabase
+          .from("command_logs")
+          .update({
+            status: statusVal,
+            response_body: body,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("trans_id", transId)
+          .eq("command_type", "restart_device");
+        if (updateErr) console.error("[webhook] restart_device update error:", updateErr);
         break;
       }
 
