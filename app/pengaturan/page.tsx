@@ -7,18 +7,56 @@ import {
   Settings, Save, Loader2, Copy, Check, RefreshCw, AlertTriangle, Clock, Shield,
 } from "lucide-react";
 
+function useLiveClock(timezone: string) {
+  const [time, setTime] = useState(() =>
+    new Date().toLocaleString("id-ID", {
+      timeZone: timezone,
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    })
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(
+        new Date().toLocaleString("id-ID", {
+          timeZone: timezone,
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        })
+      );
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [timezone]);
+
+  return time;
+}
+
 export default function PengaturanPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [cloudId, setCloudId] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [showApiKey, setShowApiKey] = useState(false);
-  const [timezone, setTimezone] = useState("7");
+  const [timezone, setTimezone] = useState("Asia/Jakarta");
   const [restarting, setRestarting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showRestartDialog, setShowRestartDialog] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [twoFaEnabled, setTwoFaEnabled] = useState(false);
+  const liveClock = useLiveClock(timezone);
 
   const loadSettings = async () => {
     setLoading(true);
@@ -203,6 +241,12 @@ export default function PengaturanPage() {
               <h3 className="text-lg font-bold text-white">Kontrol Mesin</h3>
             </div>
             <div className="space-y-4">
+              {isConfigComplete && (
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                  <p className="text-xs text-gray-400 mb-1 uppercase tracking-wider">Waktu Mesin Saat Ini</p>
+                  <p className="text-2xl font-mono font-bold text-white tabular-nums">{liveClock}</p>
+                </div>
+              )}
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Timezone</label>
                 <select
@@ -210,9 +254,9 @@ export default function PengaturanPage() {
                   onChange={(e) => setTimezone(e.target.value)}
                   className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-[#1976D2]/50"
                 >
-                  <option value="7">GMT+7 (WIB)</option>
-                  <option value="8">GMT+8 (WITA)</option>
-                  <option value="9">GMT+9 (WIT)</option>
+                  <option value="Asia/Jakarta">GMT+7 (WIB) - Asia/Jakarta</option>
+                  <option value="Asia/Makassar">GMT+8 (WITA) - Asia/Makassar</option>
+                  <option value="Asia/Jayapura">GMT+9 (WIT) - Asia/Jayapura</option>
                 </select>
               </div>
               <button
