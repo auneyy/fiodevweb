@@ -45,6 +45,11 @@ export async function POST(request: NextRequest) {
         },
         { onConflict: "cloud_id,pin" }
       );
+
+      await supabase.from("device_pins").upsert(
+        { cloud_id: creds.cloudId, pin, fetched_at: new Date().toISOString() },
+        { onConflict: "cloud_id,pin" }
+      );
     }
 
     return NextResponse.json(result);

@@ -33,6 +33,14 @@ export async function POST(request: NextRequest) {
     });
     if (insertErr) console.error("[register-online] Failed to insert command_log:", insertErr);
 
+    if (result.success && pin) {
+      const { error: pinErr } = await supabase.from("device_pins").upsert(
+        { cloud_id: creds.cloudId, pin, fetched_at: new Date().toISOString() },
+        { onConflict: "cloud_id,pin" }
+      );
+      if (pinErr) console.error("[register-online] Failed to add pin to device_pins:", pinErr);
+    }
+
     return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json(

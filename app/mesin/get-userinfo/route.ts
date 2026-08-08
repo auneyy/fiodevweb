@@ -18,6 +18,21 @@ export async function POST(request: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
+    const pinListResult = await callFingerspot("get_userid_list", {}, creds);
+    if (pinListResult.success && pinListResult.data) {
+      const pinData = pinListResult.data as Record<string, unknown>;
+      const pinArr = (pinData.pin_arr as string[]) || [];
+      for (const p of pinArr) {
+        if (p) {
+          await supabase.from("device_pins").upsert(
+            { cloud_id: creds.cloudId, pin: p, fetched_at: new Date().toISOString() },
+            { onConflict: "cloud_id,pin" }
+          );
+        }
+      }
+    }
+    await new Promise((r) => setTimeout(r, 2000));
+
     const { data: pins } = await supabase
       .from("device_pins")
       .select("pin")
@@ -35,6 +50,7 @@ export async function POST(request: NextRequest) {
 
       if (lastResult.success && lastResult.data) {
         const d = lastResult.data as Record<string, unknown>;
+        console.log("[get-userinfo] pin:", pin, "response data keys:", Object.keys(d), "finger:", d.finger, "face:", d.face, "vein:", d.vein);
         if (d.pin) {
           const updateData: Record<string, unknown> = {
             cloud_id: creds.cloudId,
