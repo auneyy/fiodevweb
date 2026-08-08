@@ -50,22 +50,24 @@ export async function POST(request: NextRequest) {
 
       if (lastResult.success && lastResult.data) {
         const d = lastResult.data as Record<string, unknown>;
-        console.log("[get-userinfo] pin:", pin, "response data keys:", Object.keys(d), "finger:", d.finger, "face:", d.face, "vein:", d.vein);
+        console.log("[get-userinfo] pin:", pin, "data:", JSON.stringify(d).substring(0, 300));
         if (d.pin) {
           const updateData: Record<string, unknown> = {
             cloud_id: creds.cloudId,
             pin: d.pin,
-            name: d.name ?? "",
-            privilege: Number(d.privilege ?? 0),
-            finger: Number(d.finger ?? 0),
-            face: Number(d.face ?? 0),
-            rfid: Number(d.rfid ?? 0),
-            vein: Number(d.vein ?? 0),
-            password: d.password ?? "",
-            template: d.template ?? "",
-            raw_payload: lastResult.data,
             synced_at: new Date().toISOString(),
+            raw_payload: lastResult.data,
           };
+
+          if (d.name != null) updateData.name = d.name;
+          if (d.privilege != null) updateData.privilege = Number(d.privilege);
+          if (d.password != null) updateData.password = d.password;
+          if (d.rfid != null) updateData.rfid = Number(d.rfid);
+          if (d.template != null) updateData.template = d.template;
+          if (d.finger != null) updateData.finger = Number(d.finger);
+          if (d.face != null) updateData.face = Number(d.face);
+          if (d.vein != null) updateData.vein = Number(d.vein);
+
           const { error } = await supabase
             .from("users")
             .upsert(updateData, { onConflict: "cloud_id,pin" });

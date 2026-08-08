@@ -43,7 +43,7 @@ export default function UserPage() {
   const [formPin, setFormPin] = useState("");
   const [formName, setFormName] = useState("");
   const [formPassword, setFormPassword] = useState("");
-  const [formPrivilege, setFormPrivilege] = useState(0);
+  const [formPrivilege, setFormPrivilege] = useState(1);
   const [formRfid, setFormRfid] = useState("");
   const [formTemplate, setFormTemplate] = useState("");
   const [formPhoto, setFormPhoto] = useState<File | null>(null);
@@ -102,17 +102,27 @@ export default function UserPage() {
       const res = await fetch("/mesin/get-userinfo", { method: "POST" });
       const result = await res.json();
 
-      await loadUsers();
+      showToast("Menunggu data dari mesin...", "success");
 
-      if (result.success) {
-        showToast(result.message || "Sinkronisasi selesai", "success");
-      } else {
-        showToast(result.message || "Gagal sinkronisasi", "error");
-      }
+      let attempts = 0;
+      const maxAttempts = 10;
+      const pollInterval = setInterval(async () => {
+        attempts++;
+        await loadUsers();
+        if (attempts >= maxAttempts) {
+          clearInterval(pollInterval);
+          setSyncing(false);
+          if (result.success) {
+            showToast(result.message || "Sinkronisasi selesai", "success");
+          } else {
+            showToast(result.message || "Gagal sinkronisasi", "error");
+          }
+        }
+      }, 2000);
     } catch {
       showToast("Gagal mengirim perintah", "error");
+      setSyncing(false);
     }
-    setSyncing(false);
   };
 
   const handleAddUser = async () => {
@@ -375,11 +385,13 @@ export default function UserPage() {
                       <td className="px-5 py-4">
                         <span className={cn(
                           "px-2.5 py-1 rounded-full text-[13px] font-medium",
-                          user.privilege === 14
-                            ? "bg-white/10 text-white"
-                            : "bg-white/5 text-gray-400"
+                          user.privilege === 3
+                            ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                            : user.privilege === 2
+                              ? "bg-white/10 text-white"
+                              : "bg-white/5 text-gray-400"
                         )}>
-                          {user.privilege === 14 ? "Admin" : "User"}
+                          {user.privilege === 3 ? "Supervisor" : user.privilege === 2 ? "Admin" : "User"}
                         </span>
                       </td>
                        <td className="px-5 py-4 text-[15px] text-gray-400">{user.finger > 0 ? `${user.finger}` : "-"}</td>
@@ -465,8 +477,9 @@ export default function UserPage() {
                   onChange={(e) => setFormPrivilege(Number(e.target.value))}
                   className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-white/20"
                 >
-                  <option value={0}>User Biasa</option>
-                  <option value={14}>Admin</option>
+                  <option value={1}>User Biasa</option>
+                  <option value={2}>Admin / Manager</option>
+                  <option value={3}>Supervisor</option>
                 </select>
               </div>
               <div>
@@ -653,7 +666,7 @@ export default function UserPage() {
               </div>
               <div className="space-y-3">
                 {[
-                  ["Privilege", selectedUser.privilege === 14 ? "Admin" : "User Biasa"],
+                  ["Privilege", selectedUser.privilege === 3 ? "Supervisor" : selectedUser.privilege === 2 ? "Admin" : "User Biasa"],
                   ["Jari", selectedUser.finger > 0 ? `${selectedUser.finger} jari` : "Tidak ada"],
                   ["Wajah", selectedUser.face > 0 ? "Ya" : "Tidak ada"],
                   ["Vein", selectedUser.vein > 0 ? "Ya" : "Tidak ada"],
