@@ -55,22 +55,33 @@ export default function UserPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadUsers = async () => {
-    setLoading(true);
-    const cid = await getClientCloudId();
-    setCloudId(cid || "");
-    if (!cid) {
+    try {
+      setLoading(true);
+      const cid = await getClientCloudId();
+      setCloudId(cid || "");
+      if (!cid) {
+        setUsers([]);
+        setLoading(false);
+        return;
+      }
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("cloud_id", cid)
+        .order("pin");
+      if (error) {
+        console.error("[user] Failed to load users:", error);
+        setUsers([]);
+      } else {
+        setUsers(data || []);
+      }
+    } catch (err) {
+      console.error("[user] loadUsers error:", err);
       setUsers([]);
+    } finally {
       setLoading(false);
-      return;
     }
-    const supabase = createClient();
-    const { data } = await supabase
-      .from("users")
-      .select("*")
-      .eq("cloud_id", cid)
-      .order("pin");
-    setUsers(data || []);
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -97,21 +108,30 @@ export default function UserPage() {
       let attempts = 0;
       const maxAttempts = 15;
       const pollInterval = setInterval(async () => {
-        attempts++;
-        await loadUsers();
+        try {
+          attempts++;
+          await loadUsers();
 
-        const { data: after } = await createClient()
-          .from("users")
-          .select("id", { count: "exact", head: true })
-          .eq("cloud_id", cloudId);
-        const countAfter = after?.length ?? 0;
+          const { data: after } = await createClient()
+            .from("users")
+            .select("id", { count: "exact", head: true })
+            .eq("cloud_id", cloudId);
+          const countAfter = after?.length ?? 0;
 
-        if (countAfter > countBefore || attempts >= maxAttempts) {
-          clearInterval(pollInterval);
-          setSyncing(false);
-          if (countAfter > countBefore) {
-            showToast(`Sinkronisasi selesai! ${countAfter - countBefore} user baru ditemukan.`, "success");
-          } else {
+          if (countAfter > countBefore || attempts >= maxAttempts) {
+            clearInterval(pollInterval);
+            setSyncing(false);
+            if (countAfter > countBefore) {
+              showToast(`Sinkronisasi selesai! ${countAfter - countBefore} user baru ditemukan.`, "success");
+            } else {
+              showToast("Sinkronisasi selesai", "success");
+            }
+          }
+        } catch (pollErr) {
+          console.error("[user] Poll error:", pollErr);
+          if (attempts >= maxAttempts) {
+            clearInterval(pollInterval);
+            setSyncing(false);
             showToast("Sinkronisasi selesai", "success");
           }
         }
