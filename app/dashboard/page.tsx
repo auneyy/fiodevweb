@@ -62,11 +62,14 @@ export default function DashboardPage() {
           return;
         }
 
+        const now = new Date();
+        const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+
         const [usersCount, attCount, pinsCount] = await Promise.all([
           supabase.from("users").select("id", { count: "exact", head: true }).eq("cloud_id", cloudId),
           supabase.from("attendance_logs").select("id", { count: "exact", head: true })
             .eq("cloud_id", cloudId)
-            .gte("scan_time", new Date().toISOString().split("T")[0]),
+            .gte("scan_time", todayStr),
           supabase.from("device_pins").select("id", { count: "exact", head: true }).eq("cloud_id", cloudId),
         ]);
 
@@ -81,10 +84,17 @@ export default function DashboardPage() {
         for (let i = 6; i >= 0; i--) {
           const d = new Date();
           d.setDate(d.getDate() - i);
-          const dateStr = d.toISOString().split("T")[0];
+          const year = d.getFullYear();
+          const month = String(d.getMonth() + 1).padStart(2, "0");
+          const day = String(d.getDate()).padStart(2, "0");
+          const dateStr = `${year}-${month}-${day}`;
+
           const nextDate = new Date(d);
           nextDate.setDate(nextDate.getDate() + 1);
-          const nextDateStr = nextDate.toISOString().split("T")[0];
+          const nextYear = nextDate.getFullYear();
+          const nextMonth = String(nextDate.getMonth() + 1).padStart(2, "0");
+          const nextDay = String(nextDate.getDate()).padStart(2, "0");
+          const nextDateStr = `${nextYear}-${nextMonth}-${nextDay}`;
 
           const { count } = await supabase
             .from("attendance_logs")
