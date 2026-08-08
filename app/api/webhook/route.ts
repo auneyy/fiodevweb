@@ -64,6 +64,10 @@ export async function POST(request: NextRequest) {
       case "get_userinfo": {
         if (!data) break;
         const d = data as Record<string, unknown>;
+        if (!d.pin) {
+          console.warn("[webhook] get_userinfo skipped: pin is null/empty");
+          break;
+        }
         const { error } = await supabase.from("users").upsert(
           {
             cloud_id: cloudId,

@@ -64,6 +64,9 @@ export default function UserPage() {
         setLoading(false);
         return;
       }
+
+      await fetch("/mesin/cleanup-ghost", { method: "POST" });
+
       const supabase = createClient();
       const { data, error } = await supabase
         .from("users")
