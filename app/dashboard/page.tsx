@@ -221,7 +221,7 @@ export default function DashboardPage() {
                 <div className="w-full relative" style={{ height: "100px" }}>
                   <div
                     className={`absolute bottom-0 w-full rounded-t-md transition-all duration-500 ease-out ${
-                      isToday ? "bg-white/10" : "bg-white/10/30"
+                      isToday ? "bg-white/20" : "bg-white/10"
                     }`}
                     style={{ height: `${Math.max(height, 2)}%` }}
                   />
