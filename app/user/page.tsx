@@ -316,8 +316,8 @@ export default function UserPage() {
 
   const filtered = users.filter(
     (u) =>
-      u.pin.includes(search) ||
-      u.name.toLowerCase().includes(search.toLowerCase())
+      (u.pin != null && u.pin.includes(search)) ||
+      (u.name != null && u.name.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (

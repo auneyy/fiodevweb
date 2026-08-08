@@ -101,7 +101,7 @@ export default function PinPage() {
     }
   };
 
-  const filtered = pins.filter((p) => p.pin.includes(search));
+  const filtered = pins.filter((p) => p.pin != null && p.pin.includes(search));
 
   return (
     <div className="space-y-4">

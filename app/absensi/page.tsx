@@ -124,7 +124,7 @@ export default function AbsensiPage() {
 
   const getFilteredLogs = () => {
     return logs.filter((r) => {
-      if (filterPin && !r.pin.includes(filterPin)) return false;
+      if (filterPin && !(r.pin != null && r.pin.includes(filterPin))) return false;
       if (startDate && r.scan_time < startDate) return false;
       if (endDate && r.scan_time > endDate + "T23:59:59") return false;
       return true;
