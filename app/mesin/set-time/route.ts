@@ -22,13 +22,16 @@ export async function POST(request: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    await supabase.from("command_logs").insert({
+    const cmdStatus = result.success ? "success" : "failed";
+    const { error: insertErr } = await supabase.from("command_logs").insert({
       cloud_id: creds.cloudId,
       command_type: "set_time",
       trans_id: result.transId,
       request_body: { timezone },
-      status: "pending",
+      response_body: result,
+      status: cmdStatus,
     });
+    if (insertErr) console.error("[set-time] Failed to insert command_log:", insertErr);
 
     return NextResponse.json(result);
   } catch (error) {

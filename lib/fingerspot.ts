@@ -48,7 +48,7 @@ export async function callFingerspot(
 
   const fullBody = { ...body, trans_id: transId, cloud_id: cloudId };
 
-  const { data: logData } = await supabase
+  const { error: insertErr } = await supabase
     .from("api_logs")
     .insert({
       cloud_id: cloudId,
@@ -56,9 +56,8 @@ export async function callFingerspot(
       api_type: endpoint,
       request_body: fullBody,
       status: "pending",
-    })
-    .select("id")
-    .single();
+    });
+  if (insertErr) console.error("[fingerspot] Failed to insert api_log:", insertErr);
 
   try {
     const url = `https://developer.fingerspot.io/api/${endpoint}`;
@@ -76,15 +75,17 @@ export async function callFingerspot(
     const result = await response.json();
     console.log(`[fingerspot] Response status=${response.status}, result=`, JSON.stringify(result).substring(0, 300));
 
-    await supabase
+    const newStatus = result.success ? "success" : "failed";
+    const { error: updateErr } = await supabase
       .from("api_logs")
       .update({
-        status: result.success ? "success" : "failed",
+        status: newStatus,
         response_body: result,
         status_code: response.status,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", logData?.id);
+      .eq("trans_id", transId);
+    if (updateErr) console.error("[fingerspot] Failed to update api_logs:", updateErr);
 
     return {
       success: result.success,
@@ -94,14 +95,15 @@ export async function callFingerspot(
     };
   } catch (error) {
     console.error(`[fingerspot] Fetch error:`, error);
-    await supabase
+    const { error: updateErr } = await supabase
       .from("api_logs")
       .update({
         status: "failed",
         response_body: { error: (error as Error).message },
         updated_at: new Date().toISOString(),
       })
-      .eq("id", logData?.id);
+      .eq("trans_id", transId);
+    if (updateErr) console.error("[fingerspot] Failed to update api_logs on error:", updateErr);
 
     return {
       success: false,
