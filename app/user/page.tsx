@@ -226,10 +226,13 @@ export default function UserPage() {
     if (!selectedUser) return;
     setFormLoading(true);
     try {
+      const payload = selectedUser.pin
+        ? { pin: selectedUser.pin }
+        : { id: selectedUser.id };
       const res = await fetch("/mesin/delete-userinfo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pin: selectedUser.pin }),
+        body: JSON.stringify(payload),
       });
       const result = await res.json();
       if (result.success) {
@@ -549,7 +552,11 @@ export default function UserPage() {
           <div className="bg-[#1a1a24] border border-white/10 rounded-2xl w-full max-w-md mx-4 p-6">
             <h3 className="text-lg font-bold text-white mb-2">Hapus User</h3>
             <p className="text-sm text-gray-400 mb-6">
-              Apakah Anda yakin ingin menghapus user dengan PIN <span className="font-mono font-bold text-white">{selectedUser.pin}</span> ({selectedUser.name})?
+              Apakah Anda yakin ingin menghapus user{selectedUser.pin ? (
+                <> dengan PIN <span className="font-mono font-bold text-white">{selectedUser.pin}</span> ({selectedUser.name})</>
+              ) : (
+                <span className="text-yellow-400"> (record tidak valid tanpa PIN)</span>
+              )}?
             </p>
             <div className="flex justify-end gap-3">
               <button
