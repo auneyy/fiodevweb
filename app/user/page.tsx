@@ -99,50 +99,20 @@ export default function UserPage() {
   const handleSync = async () => {
     setSyncing(true);
     try {
-      const { data: before } = await createClient()
-        .from("users")
-        .select("id", { count: "exact", head: true })
-        .eq("cloud_id", cloudId);
-      const countBefore = before?.length ?? 0;
+      const res = await fetch("/mesin/get-userinfo", { method: "POST" });
+      const result = await res.json();
 
-      await fetch("/mesin/get-userinfo", { method: "POST" });
-      showToast("Perintah terkirim. Menunggu respons mesin...", "success");
+      await loadUsers();
 
-      let attempts = 0;
-      const maxAttempts = 15;
-      const pollInterval = setInterval(async () => {
-        try {
-          attempts++;
-          await loadUsers();
-
-          const { data: after } = await createClient()
-            .from("users")
-            .select("id", { count: "exact", head: true })
-            .eq("cloud_id", cloudId);
-          const countAfter = after?.length ?? 0;
-
-          if (countAfter > countBefore || attempts >= maxAttempts) {
-            clearInterval(pollInterval);
-            setSyncing(false);
-            if (countAfter > countBefore) {
-              showToast(`Sinkronisasi selesai! ${countAfter - countBefore} user baru ditemukan.`, "success");
-            } else {
-              showToast("Sinkronisasi selesai", "success");
-            }
-          }
-        } catch (pollErr) {
-          console.error("[user] Poll error:", pollErr);
-          if (attempts >= maxAttempts) {
-            clearInterval(pollInterval);
-            setSyncing(false);
-            showToast("Sinkronisasi selesai", "success");
-          }
-        }
-      }, 2000);
+      if (result.success) {
+        showToast(result.message || "Sinkronisasi selesai", "success");
+      } else {
+        showToast(result.message || "Gagal sinkronisasi", "error");
+      }
     } catch {
       showToast("Gagal mengirim perintah", "error");
-      setSyncing(false);
     }
+    setSyncing(false);
   };
 
   const handleAddUser = async () => {

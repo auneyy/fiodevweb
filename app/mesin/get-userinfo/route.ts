@@ -28,11 +28,44 @@ export async function POST(request: NextRequest) {
     }
 
     let lastResult;
+    let savedCount = 0;
+
     for (const { pin } of pins) {
       lastResult = await callFingerspot("get_userinfo", { pin }, creds);
+
+      if (lastResult.success && lastResult.data) {
+        const d = lastResult.data as Record<string, unknown>;
+        if (d.pin) {
+          const updateData: Record<string, unknown> = {
+            cloud_id: creds.cloudId,
+            pin: d.pin,
+            name: d.name ?? "",
+            privilege: Number(d.privilege ?? 0),
+            finger: Number(d.finger ?? 0),
+            face: Number(d.face ?? 0),
+            rfid: Number(d.rfid ?? 0),
+            vein: Number(d.vein ?? 0),
+            password: d.password ?? "",
+            template: d.template ?? "",
+            raw_payload: lastResult.data,
+            synced_at: new Date().toISOString(),
+          };
+          const { error } = await supabase
+            .from("users")
+            .upsert(updateData, { onConflict: "cloud_id,pin" });
+          if (error) {
+            console.error("[get-userinfo] upsert error:", error);
+          } else {
+            savedCount++;
+          }
+        }
+      }
     }
 
-    return NextResponse.json(lastResult);
+    return NextResponse.json({
+      success: true,
+      message: `${savedCount} user berhasil disinkronisasi`,
+    });
   } catch (error) {
     return NextResponse.json(
       { error: (error as Error).message },
