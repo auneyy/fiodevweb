@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { getClientCloudId } from "@/lib/user-settings-client";
 import GlassCard from "../components/GlassCard";
 import StatusBadge from "../components/StatusBadge";
+import Pagination from "../components/Pagination";
 import { formatDate } from "@/lib/utils";
 import { Webhook, ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -18,11 +19,14 @@ interface WebhookLog {
   created_at: string;
 }
 
+const ROWS_PER_PAGE = 10;
+
 export default function WebhookLogsPage() {
   const [logs, setLogs] = useState<WebhookLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState("");
   const [cloudId, setCloudId] = useState("");
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     loadLogs();
@@ -54,6 +58,12 @@ export default function WebhookLogsPage() {
     return true;
   });
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ROWS_PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+  const paged = filtered.slice((safePage - 1) * ROWS_PER_PAGE, safePage * ROWS_PER_PAGE);
+
+  const handleFilterType = (v: string) => { setFilterType(v); setPage(1); };
+
   return (
     <div className="space-y-4">
       <GlassCard className="p-5">
@@ -61,11 +71,11 @@ export default function WebhookLogsPage() {
           <div className="flex items-center gap-3">
             <Webhook className="w-6 h-6 text-gray-400" />
             <h2 className="text-xl font-bold text-white">Riwayat Webhook</h2>
-            <span className="text-sm text-gray-400">({logs.length} log)</span>
+            <span className="text-sm text-gray-400">({filtered.length} log)</span>
           </div>
           <select
             value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
+            onChange={(e) => handleFilterType(e.target.value)}
             className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-white/20"
           >
             <option value="">Semua Tipe</option>
@@ -91,51 +101,54 @@ export default function WebhookLogsPage() {
             ))}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-white/5 border-b border-white/10">
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Waktu</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Tipe</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Cloud ID</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Trans ID</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Status</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold text-right">Detail</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="px-5 py-16 text-center text-gray-500 text-[15px]">
-                      Tidak ada data webhook log
-                    </td>
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-white/5 border-b border-white/10">
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Waktu</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Tipe</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Cloud ID</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Trans ID</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Status</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold text-right">Detail</th>
                   </tr>
-                ) : (
-                  filtered.map((log) => (
-                    <tr key={log.id} className="hover:bg-white/5 border-b border-white/5 transition-colors">
-                      <td className="px-5 py-4 text-[15px] text-gray-200">{formatDate(log.created_at)}</td>
-                      <td className="px-5 py-4">
-                        <StatusBadge value={log.webhook_type} type="webhook_type" />
-                      </td>
-                      <td className="px-5 py-4 text-[15px] font-mono text-gray-300">{log.cloud_id}</td>
-                      <td className="px-5 py-4 text-[15px] font-mono text-gray-300">{log.trans_id}</td>
-                      <td className="px-5 py-4">
-                        <StatusBadge value={log.status} />
-                      </td>
-                      <td className="px-5 py-4 text-right">
-                        <Link
-                          href={`/webhook-logs/${log.id}`}
-                          className="inline-flex items-center gap-1 text-[15px] text-gray-400 hover:text-white"
-                        >
-                          Lihat <ChevronRight className="w-4 h-4" />
-                        </Link>
+                </thead>
+                <tbody>
+                  {paged.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-5 py-16 text-center text-gray-500 text-[15px]">
+                        Tidak ada data webhook log
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ) : (
+                    paged.map((log) => (
+                      <tr key={log.id} className="hover:bg-white/5 border-b border-white/5 transition-colors">
+                        <td className="px-5 py-4 text-[15px] text-gray-200">{formatDate(log.created_at)}</td>
+                        <td className="px-5 py-4">
+                          <StatusBadge value={log.webhook_type} type="webhook_type" />
+                        </td>
+                        <td className="px-5 py-4 text-[15px] font-mono text-gray-300">{log.cloud_id}</td>
+                        <td className="px-5 py-4 text-[15px] font-mono text-gray-300">{log.trans_id}</td>
+                        <td className="px-5 py-4">
+                          <StatusBadge value={log.status} />
+                        </td>
+                        <td className="px-5 py-4 text-right">
+                          <Link
+                            href={`/webhook-logs/${log.id}`}
+                            className="inline-flex items-center gap-1 text-[15px] text-gray-400 hover:text-white"
+                          >
+                            Lihat <ChevronRight className="w-4 h-4" />
+                          </Link>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <Pagination currentPage={safePage} totalPages={totalPages} onPageChange={setPage} />
+          </>
         )}
       </GlassCard>
     </div>
