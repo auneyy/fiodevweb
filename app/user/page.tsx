@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getClientCloudId } from "@/lib/user-settings-client";
 import GlassCard from "../components/GlassCard";
+import Pagination from "../components/Pagination";
 import Toast from "../components/Toast";
 import { cn, encodePhotoToTemplate } from "@/lib/utils";
 import {
@@ -25,10 +26,13 @@ interface User {
   synced_at: string;
 }
 
+const ROWS_PER_PAGE = 10;
+
 export default function UserPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const [syncing, setSyncing] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -306,6 +310,12 @@ export default function UserPage() {
       (u.name != null && u.name.toLowerCase().includes(search.toLowerCase()))
   );
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ROWS_PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+  const paged = filtered.slice((safePage - 1) * ROWS_PER_PAGE, safePage * ROWS_PER_PAGE);
+
+  const handleSearch = (v: string) => { setSearch(v); setPage(1); };
+
   return (
     <div className="space-y-4">
       {toast && <Toast message={toast.message} type={toast.type} />}
@@ -315,7 +325,7 @@ export default function UserPage() {
           <div className="flex items-center gap-3">
             <Users className="w-6 h-6 text-gray-400" />
             <h2 className="text-xl font-bold text-white">Data User</h2>
-            <span className="text-sm text-gray-400">({users.length} user)</span>
+            <span className="text-sm text-gray-400">({filtered.length} user)</span>
           </div>
           <div className="flex items-center gap-3 w-full md:w-auto">
             <div className="relative flex-1 md:w-64">
@@ -324,7 +334,7 @@ export default function UserPage() {
                 type="text"
                 placeholder="Cari PIN atau nama..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => handleSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20"
               />
             </div>
@@ -355,77 +365,80 @@ export default function UserPage() {
             ))}
           </div>
         ) : (
-           <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="border-b border-white/[0.08]">
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">No</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">PIN</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Nama</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Privilege</th>
-                   <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Jari</th>
-                   <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Wajah</th>
-                   <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Vena</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold text-right">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.length === 0 ? (
-                  <tr>
-                     <td colSpan={8} className="px-5 py-16 text-center text-gray-500 text-[15px]">
-                      Tidak ada data user
-                    </td>
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="border-b border-white/[0.08]">
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">No</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">PIN</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Nama</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Privilege</th>
+                     <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Jari</th>
+                     <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Wajah</th>
+                     <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Vena</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold text-right">Aksi</th>
                   </tr>
-                ) : (
-                  filtered.map((user, idx) => (
-                    <tr key={user.id} className="hover:bg-white/[0.03] border-b border-white/[0.04] transition-colors duration-200">
-                      <td className="px-5 py-4 text-[15px] text-gray-500">{idx + 1}</td>
-                      <td className="px-5 py-4 text-[15px] font-semibold text-white font-mono">{user.pin}</td>
-                      <td className="px-5 py-4 text-[15px] text-gray-300">{user.name}</td>
-                      <td className="px-5 py-4">
-                        <span className={cn(
-                          "px-2.5 py-1 rounded-full text-[13px] font-medium",
-                          user.privilege === 3
-                            ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
-                            : user.privilege === 2
-                              ? "bg-white/10 text-white"
-                              : "bg-white/5 text-gray-400"
-                        )}>
-                          {user.privilege === 3 ? "Supervisor" : user.privilege === 2 ? "Admin" : "User"}
-                        </span>
-                      </td>
-                       <td className="px-5 py-4 text-[15px] text-gray-400">{user.finger > 0 ? `${user.finger}` : "-"}</td>
-                       <td className="px-5 py-4 text-[15px] text-gray-400">{user.face > 0 ? "Ya" : "-"}</td>
-                       <td className="px-5 py-4 text-[15px] text-gray-400">{user.vein > 0 ? "Ya" : "-"}</td>
-                      <td className="px-5 py-4 text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <button onClick={() => openDetailDrawer(user)} className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors" title="Detail">
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <div className="relative group">
-                            <button className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
-                              <MoreVertical className="w-4 h-4" />
-                            </button>
-                            <div className="absolute right-0 top-8 z-40 w-44 bg-[#1a1a24] border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                              <button onClick={() => openEditModal(user)} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-200 hover:bg-white/5 rounded-t-xl">
-                                <Edit className="w-4 h-4" /> Edit
-                              </button>
-                              <button onClick={() => { openRegisterModal(user); }} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-200 hover:bg-white/5">
-                                <UserPlus className="w-4 h-4" /> Register Online
-                              </button>
-                              <button onClick={() => openDeleteDialog(user)} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-400 hover:bg-white/5 rounded-b-xl">
-                                <Trash2 className="w-4 h-4" /> Hapus
-                              </button>
-                            </div>
-                          </div>
-                        </div>
+                </thead>
+                <tbody>
+                  {paged.length === 0 ? (
+                    <tr>
+                       <td colSpan={8} className="px-5 py-16 text-center text-gray-500 text-[15px]">
+                        Tidak ada data user
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ) : (
+                    paged.map((user, idx) => (
+                      <tr key={user.id} className="hover:bg-white/[0.03] border-b border-white/[0.04] transition-colors duration-200">
+                        <td className="px-5 py-4 text-[15px] text-gray-500">{(safePage - 1) * ROWS_PER_PAGE + idx + 1}</td>
+                        <td className="px-5 py-4 text-[15px] font-semibold text-white font-mono">{user.pin}</td>
+                        <td className="px-5 py-4 text-[15px] text-gray-300">{user.name}</td>
+                        <td className="px-5 py-4">
+                          <span className={cn(
+                            "px-2.5 py-1 rounded-full text-[13px] font-medium",
+                            user.privilege === 3
+                              ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                              : user.privilege === 2
+                                ? "bg-white/10 text-white"
+                                : "bg-white/5 text-gray-400"
+                          )}>
+                            {user.privilege === 3 ? "Supervisor" : user.privilege === 2 ? "Admin" : "User"}
+                          </span>
+                        </td>
+                         <td className="px-5 py-4 text-[15px] text-gray-400">{user.finger > 0 ? `${user.finger}` : "-"}</td>
+                         <td className="px-5 py-4 text-[15px] text-gray-400">{user.face > 0 ? "Ya" : "-"}</td>
+                         <td className="px-5 py-4 text-[15px] text-gray-400">{user.vein > 0 ? "Ya" : "-"}</td>
+                        <td className="px-5 py-4 text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <button onClick={() => openDetailDrawer(user)} className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors" title="Detail">
+                              <Eye className="w-4 h-4" />
+                            </button>
+                            <div className="relative group">
+                              <button className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
+                                <MoreVertical className="w-4 h-4" />
+                              </button>
+                              <div className="absolute right-0 top-8 z-40 w-44 bg-[#1a1a24] border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                <button onClick={() => openEditModal(user)} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-200 hover:bg-white/5 rounded-t-xl">
+                                  <Edit className="w-4 h-4" /> Edit
+                                </button>
+                                <button onClick={() => { openRegisterModal(user); }} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-200 hover:bg-white/5">
+                                  <UserPlus className="w-4 h-4" /> Register Online
+                                </button>
+                                <button onClick={() => openDeleteDialog(user)} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-400 hover:bg-white/5 rounded-b-xl">
+                                  <Trash2 className="w-4 h-4" /> Hapus
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <Pagination currentPage={safePage} totalPages={totalPages} onPageChange={setPage} />
+          </>
         )}
       </GlassCard>
 

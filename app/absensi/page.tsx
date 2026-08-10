@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getClientCloudId } from "@/lib/user-settings-client";
 import GlassCard from "../components/GlassCard";
+import Pagination from "../components/Pagination";
 import Toast from "../components/Toast";
 import { formatDate, formatVerifyType, formatStatusScan } from "@/lib/utils";
 import { Clock, Search, Download, Loader2 } from "lucide-react";
@@ -18,6 +19,8 @@ interface AttendanceLog {
   photo_url: string | null;
 }
 
+const ROWS_PER_PAGE = 10;
+
 export default function AbsensiPage() {
   const [logs, setLogs] = useState<AttendanceLog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,6 +30,7 @@ export default function AbsensiPage() {
   const [filterPin, setFilterPin] = useState("");
   const [cloudId, setCloudId] = useState("");
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     loadLogs();
@@ -108,7 +112,6 @@ export default function AbsensiPage() {
   };
 
   const handleExportCSV = () => {
-    const filtered = getFilteredLogs();
     const header = "No,PIN,Nama,Waktu Scan,Metode,Status,Foto\n";
     const rows = filtered.map((r, i) =>
       `${i + 1},${r.pin},"${r.name}","${formatDate(r.scan_time)}","${formatVerifyType(r.verify)}","${formatStatusScan(r.status_scan)}","${r.photo_url || ""}"`
@@ -122,16 +125,20 @@ export default function AbsensiPage() {
     URL.revokeObjectURL(url);
   };
 
-  const getFilteredLogs = () => {
-    return logs.filter((r) => {
-      if (filterPin && !(r.pin != null && r.pin.includes(filterPin))) return false;
-      if (startDate && r.scan_time < startDate) return false;
-      if (endDate && r.scan_time > endDate + "T23:59:59") return false;
-      return true;
-    });
-  };
+  const filtered = logs.filter((r) => {
+    if (filterPin && !(r.pin != null && r.pin.includes(filterPin))) return false;
+    if (startDate && r.scan_time < startDate) return false;
+    if (endDate && r.scan_time > endDate + "T23:59:59") return false;
+    return true;
+  });
 
-  const filtered = getFilteredLogs();
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ROWS_PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+  const paged = filtered.slice((safePage - 1) * ROWS_PER_PAGE, safePage * ROWS_PER_PAGE);
+
+  const handleFilterPin = (v: string) => { setFilterPin(v); setPage(1); };
+  const handleStartDate = (v: string) => { setStartDate(v); setPage(1); };
+  const handleEndDate = (v: string) => { setEndDate(v); setPage(1); };
 
   return (
     <div className="space-y-4">
@@ -142,20 +149,20 @@ export default function AbsensiPage() {
           <div className="flex items-center gap-3">
             <Clock className="w-6 h-6 text-gray-400" />
             <h2 className="text-xl font-bold text-white">Data Absensi</h2>
-            <span className="text-sm text-gray-400">({logs.length} record)</span>
+            <span className="text-sm text-gray-400">({filtered.length} record)</span>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <input
               type="date"
               value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
+              onChange={(e) => handleStartDate(e.target.value)}
               className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-white/20"
             />
             <span className="text-gray-500">-</span>
             <input
               type="date"
               value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
+              onChange={(e) => handleEndDate(e.target.value)}
               className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-white/20"
             />
             <div className="relative">
@@ -164,7 +171,7 @@ export default function AbsensiPage() {
                 type="text"
                 placeholder="Filter PIN..."
                 value={filterPin}
-                onChange={(e) => setFilterPin(e.target.value)}
+                onChange={(e) => handleFilterPin(e.target.value)}
                 className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20 w-32"
               />
             </div>
@@ -195,65 +202,68 @@ export default function AbsensiPage() {
             ))}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-white/5 border-b border-white/10">
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">No</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">PIN</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Nama</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Waktu Scan</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Metode</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold text-center">Status</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Foto</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="px-5 py-16 text-center text-gray-500 text-[15px]">
-                      Tidak ada data absensi
-                    </td>
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-white/5 border-b border-white/10">
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">No</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">PIN</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Nama</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Waktu Scan</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Metode</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold text-center">Status</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-400 font-semibold">Foto</th>
                   </tr>
-                ) : (
-                  filtered.map((row, idx) => (
-                    <tr key={row.id} className="hover:bg-white/5 border-b border-white/5 transition-colors">
-                      <td className="px-5 py-4 text-[15px] text-gray-200">{idx + 1}</td>
-                      <td className="px-5 py-4 text-[15px] font-bold text-white font-mono">{row.pin}</td>
-                      <td className="px-5 py-4 text-[15px] text-gray-200">{row.name}</td>
-                      <td className="px-5 py-4 text-[15px] text-gray-200">{formatDate(row.scan_time)}</td>
-                      <td className="px-5 py-4">
-                        <span className={`px-2.5 py-1 rounded-full text-[13px] font-medium ${
-                          row.verify >= 0 && row.verify <= 9 ? "bg-white/10 text-white border border-white/20"
-                          : row.verify === 15 ? "bg-white/10 text-white border border-white/20"
-                          : row.verify === 2 ? "bg-white/5 text-gray-400 border border-white/10"
-                          : "bg-white/5 text-gray-500 border border-white/10"
-                        }`}>
-                          {formatVerifyType(row.verify)}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 text-center">
-                        <span className={`px-2.5 py-1 rounded-full text-[13px] font-medium ${
-                          row.status_scan === 0 ? "bg-white/10 text-white border border-white/20"
-                          : row.status_scan === 1 ? "bg-white/5 text-gray-400 border border-white/10"
-                          : "bg-white/5 text-gray-500 border border-white/10"
-                        }`}>
-                          {formatStatusScan(row.status_scan)}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 text-[15px] text-gray-200">
-                        {row.photo_url ? (
-                          <a href={row.photo_url} target="_blank" rel="noopener noreferrer" className="text-white hover:underline">
-                            Lihat
-                          </a>
-                        ) : "-"}
+                </thead>
+                <tbody>
+                  {paged.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="px-5 py-16 text-center text-gray-500 text-[15px]">
+                        Tidak ada data absensi
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ) : (
+                    paged.map((row, idx) => (
+                      <tr key={row.id} className="hover:bg-white/5 border-b border-white/5 transition-colors">
+                        <td className="px-5 py-4 text-[15px] text-gray-200">{(safePage - 1) * ROWS_PER_PAGE + idx + 1}</td>
+                        <td className="px-5 py-4 text-[15px] font-bold text-white font-mono">{row.pin}</td>
+                        <td className="px-5 py-4 text-[15px] text-gray-200">{row.name}</td>
+                        <td className="px-5 py-4 text-[15px] text-gray-200">{formatDate(row.scan_time)}</td>
+                        <td className="px-5 py-4">
+                          <span className={`px-2.5 py-1 rounded-full text-[13px] font-medium ${
+                            row.verify >= 0 && row.verify <= 9 ? "bg-white/10 text-white border border-white/20"
+                            : row.verify === 15 ? "bg-white/10 text-white border border-white/20"
+                            : row.verify === 2 ? "bg-white/5 text-gray-400 border border-white/10"
+                            : "bg-white/5 text-gray-500 border border-white/10"
+                          }`}>
+                            {formatVerifyType(row.verify)}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4 text-center">
+                          <span className={`px-2.5 py-1 rounded-full text-[13px] font-medium ${
+                            row.status_scan === 0 ? "bg-white/10 text-white border border-white/20"
+                            : row.status_scan === 1 ? "bg-white/5 text-gray-400 border border-white/10"
+                            : "bg-white/5 text-gray-500 border border-white/10"
+                          }`}>
+                            {formatStatusScan(row.status_scan)}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4 text-[15px] text-gray-200">
+                          {row.photo_url ? (
+                            <a href={row.photo_url} target="_blank" rel="noopener noreferrer" className="text-white hover:underline">
+                              Lihat
+                            </a>
+                          ) : "-"}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <Pagination currentPage={safePage} totalPages={totalPages} onPageChange={setPage} />
+          </>
         )}
       </GlassCard>
     </div>

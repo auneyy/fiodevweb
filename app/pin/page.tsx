@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getClientCloudId } from "@/lib/user-settings-client";
 import GlassCard from "../components/GlassCard";
+import Pagination from "../components/Pagination";
 import { formatDate } from "@/lib/utils";
 import Toast from "../components/Toast";
 import { Key, Search, Loader2, Fingerprint, RefreshCw } from "lucide-react";
@@ -14,11 +15,14 @@ interface DevicePin {
   fetched_at: string;
 }
 
+const ROWS_PER_PAGE = 10;
+
 export default function PinPage() {
   const [pins, setPins] = useState<DevicePin[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetching, setFetching] = useState(false);
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const [cloudId, setCloudId] = useState("");
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [lastFetchTime, setLastFetchTime] = useState<string>("");
@@ -103,6 +107,12 @@ export default function PinPage() {
 
   const filtered = pins.filter((p) => p.pin != null && p.pin.includes(search));
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ROWS_PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+  const paged = filtered.slice((safePage - 1) * ROWS_PER_PAGE, safePage * ROWS_PER_PAGE);
+
+  const handleSearch = (v: string) => { setSearch(v); setPage(1); };
+
   return (
     <div className="space-y-4">
       {toast && <Toast message={toast.message} type={toast.type} />}
@@ -125,7 +135,7 @@ export default function PinPage() {
           <div className="flex items-center gap-3">
             <Key className="w-6 h-6 text-gray-400" />
             <h2 className="text-xl font-bold text-white">Data PIN</h2>
-            <span className="text-sm text-gray-400">({pins.length} PIN)</span>
+            <span className="text-sm text-gray-400">({filtered.length} PIN)</span>
           </div>
           <div className="flex items-center gap-3">
             <div className="relative">
@@ -134,7 +144,7 @@ export default function PinPage() {
                 type="text"
                 placeholder="Cari PIN..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => handleSearch(e.target.value)}
                 className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-white/20"
               />
             </div>
@@ -182,34 +192,37 @@ export default function PinPage() {
             ))}
           </div>
         ) : (
-           <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="border-b border-white/[0.08]">
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">No</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">PIN</th>
-                  <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Tanggal Fetch</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.length === 0 ? (
-                  <tr>
-                    <td colSpan={3} className="px-5 py-16 text-center text-gray-500 text-[15px]">
-                      {pins.length === 0 ? "Belum ada data PIN" : "PIN tidak ditemukan"}
-                    </td>
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="border-b border-white/[0.08]">
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">No</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">PIN</th>
+                    <th className="px-5 py-3.5 text-xs uppercase tracking-wider text-gray-500 font-semibold">Tanggal Fetch</th>
                   </tr>
-                ) : (
-                  filtered.map((p, idx) => (
-                    <tr key={p.id} className="hover:bg-white/[0.03] border-b border-white/[0.04] transition-colors duration-200">
-                      <td className="px-5 py-4 text-[15px] text-gray-500">{idx + 1}</td>
-                      <td className="px-5 py-4 text-[15px] font-semibold text-white font-mono">{p.pin}</td>
-                      <td className="px-5 py-4 text-[15px] text-gray-400">{formatDate(p.fetched_at)}</td>
+                </thead>
+                <tbody>
+                  {paged.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="px-5 py-16 text-center text-gray-500 text-[15px]">
+                        {pins.length === 0 ? "Belum ada data PIN" : "PIN tidak ditemukan"}
+                      </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ) : (
+                    paged.map((p, idx) => (
+                      <tr key={p.id} className="hover:bg-white/[0.03] border-b border-white/[0.04] transition-colors duration-200">
+                        <td className="px-5 py-4 text-[15px] text-gray-500">{(safePage - 1) * ROWS_PER_PAGE + idx + 1}</td>
+                        <td className="px-5 py-4 text-[15px] font-semibold text-white font-mono">{p.pin}</td>
+                        <td className="px-5 py-4 text-[15px] text-gray-400">{formatDate(p.fetched_at)}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <Pagination currentPage={safePage} totalPages={totalPages} onPageChange={setPage} />
+          </>
         )}
       </GlassCard>
     </div>
