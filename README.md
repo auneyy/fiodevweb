@@ -32,7 +32,7 @@ npm install
 
 ### 3.1 Buat Project Supabase
 
-1. Buka [https://supabase.com](https://supabase.com) dan login
+1. Buka [https://supabase.com](https://supabase.com) dan login atau register jika belum punya akun
 2. Klik **New Project** → isi nama project, database password, dan region
 3. Tunggu hingga project selesai dibuat
 
@@ -42,11 +42,11 @@ Buka **Settings → API** di dashboard Supabase, catat:
 
 - **Project URL** → untuk `NEXT_PUBLIC_SUPABASE_URL`
 - **anon/public key** → untuk `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- **service_role key** → untuk `SUPABASE_SERVICE_ROLE_KEY` (rahasiakan!)
+- **service_role key** → untuk `SUPABASE_SERVICE_ROLE_KEY` (ini rahasia ya)
 
 ### 3.3 Buat Database Schema
 
-Buka **SQL Editor** di dashboard Supabase, jalankan SQL berikut secara berurutan:
+Buka **SQL Editor** di dashboard Supabase, jalankan SQL ini satu persatu:
 
 #### Tabel Settings (Global Config)
 
@@ -189,7 +189,7 @@ ALTER TABLE qrcodes DISABLE ROW LEVEL SECURITY;
 
 #### Multi-Tenant Migration (RLS + user_settings)
 
-Jalankan file `supabase/migration_multi_tenant.sql` untuk menambahkan:
+Kalau sudah, jalankan file `supabase/migration_multi_tenant.sql` untuk menambahkan:
 
 - Kolom `user_id` ke semua tabel
 - Tabel `user_settings` (menyimpan `cloud_id` dan `api_key` per user)
@@ -424,7 +424,7 @@ supabase/
 | `/mesin/set-time` | POST | Sinkron timezone device |
 | `/mesin/register-online` | POST | Register verifikasi biometrik |
 | `/mesin/restart` | POST | Restart device dari jarak jauh |
-| `/mesin/cleanup-ghost` | POST | Hapus ghost records (user null) |
+| `/mesin/cleanup-ghost` | POST | Hapus ghost records (user null ini untuk menghapus data user jika tiba-tiba saat sinkronisasi ada data yang kosong) |
 
 ---
 
