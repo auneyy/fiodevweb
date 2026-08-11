@@ -446,7 +446,7 @@ npm install
 
 ### 10.3 Webhook tidak masuk
 
-- Pastikan URL webhook di Fingerspot Cloud adalah: `https://domain-anda.com/api/webhook`
+- Pastikan URL webhook perangkat absensi di developer.fingerspot.io adalah: `https://domain-anda.com/api/webhook` atau bisa menggunakan url yang sudah tertera pada halaman pengaturan
 - Jika local development, gunakan **ngrok** atau **localtunnel** untuk expose localhost:
   ```bash
   ngrok http 3000
