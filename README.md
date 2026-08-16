@@ -18,7 +18,7 @@ Dashboard manajemen perangkat Fingerspot berbasis Next.js + Supabase. Mengelola 
 ## 1. Clone Project
 
 ```bash
-git clone https://github.com/username/task2new_fiodev.git
+git clone https://github.com/auneyy/task2new_fiodev.git
 cd task2new_fiodev
 ```
 
